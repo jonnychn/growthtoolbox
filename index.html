@@ -1,0 +1,1671 @@
+
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Growth Marketer Toolkit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+:root {
+  --bg: #000;
+  --bg-surface: #0a0a0a;
+  --bg-elevated: #111;
+  --text: #fff;
+  --text-muted: rgba(255,255,255,.5);
+  --border: rgba(255,255,255,.15);
+  --border-hover: rgba(255,255,255,.3);
+  --accent: #22c55e;
+  --accent-hover: #16a34a;
+  --accent-muted: rgba(34,197,94,.15);
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --info: #3b82f6;
+  --radius: 6px;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-heading: 'Space Mono', monospace;
+}
+
+[data-theme="light"] {
+  --bg: #fff;
+  --bg-surface: #f5f5f5;
+  --bg-elevated: #e5e5e5;
+  --text: #000;
+  --text-muted: rgba(0,0,0,.5);
+  --border: rgba(0,0,0,.15);
+  --border-hover: rgba(0,0,0,.3);
+  --accent-muted: rgba(34,197,94,.1);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: var(--font-mono);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Layout */
+.app-container { display: flex; min-height: 100vh; }
+
+.sidebar {
+  width: 260px;
+  border-right: 1px solid var(--border);
+  padding: 24px 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  overflow-y: auto;
+  background: var(--bg);
+  z-index: 100;
+}
+
+.sidebar-header {
+  padding: 0 20px 24px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 8px;
+}
+
+.sidebar-header h1 {
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.sidebar-header p {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-size: 13px;
+  color: var(--text-muted);
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  font-family: var(--font-mono);
+}
+
+.nav-item:hover { color: var(--text); background: var(--bg-surface); }
+.nav-item.active { color: var(--accent); background: var(--accent-muted); border-right: 2px solid var(--accent); }
+.nav-item .nav-icon { font-size: 16px; width: 20px; text-align: center; }
+
+.main-content {
+  flex: 1;
+  margin-left: 260px;
+  padding: 32px 40px;
+  max-width: 1100px;
+}
+
+.tool-section { display: none; }
+.tool-section.active { display: block; }
+
+.tool-header {
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.tool-header h2 {
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.tool-header p {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+/* Form elements */
+textarea, input[type="text"], input[type="number"], input[type="url"], input[type="email"], select {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  width: 100%;
+  transition: border-color 0.15s;
+  outline: none;
+}
+
+textarea:focus, input:focus, select:focus {
+  border-color: var(--accent);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 160px;
+}
+
+label {
+  display: block;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-weight: 500;
+}
+
+.btn:hover { border-color: var(--border-hover); background: var(--bg-elevated); }
+
+.btn-primary {
+  background: var(--accent);
+  color: #000;
+  border-color: var(--accent);
+}
+.btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+
+.btn-danger { border-color: var(--danger); color: var(--danger); }
+.btn-danger:hover { background: rgba(239,68,68,.1); }
+
+.btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.form-group { margin-bottom: 16px; }
+
+.two-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+/* Stats grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  font-family: var(--font-heading);
+  color: var(--accent);
+}
+
+.stat-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 4px;
+}
+
+/* Toggle buttons */
+.toggle-group {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.toggle-btn {
+  padding: 6px 14px;
+  background: var(--bg-surface);
+  color: var(--text-muted);
+  border: none;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.toggle-btn:not(:last-child) { border-right: 1px solid var(--border); }
+.toggle-btn.active { background: var(--accent); color: #000; }
+.toggle-btn:hover:not(.active) { color: var(--text); }
+
+/* Reading level badge */
+.reading-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+.grade-good { background: rgba(34,197,94,.15); color: #22c55e; border: 1px solid rgba(34,197,94,.3); }
+.grade-ok { background: rgba(245,158,11,.15); color: #f59e0b; border: 1px solid rgba(245,158,11,.3); }
+.grade-hard { background: rgba(239,68,68,.15); color: #ef4444; border: 1px solid rgba(239,68,68,.3); }
+
+/* Output preview */
+.output-preview {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-top: 16px;
+  word-break: break-all;
+  font-size: 13px;
+  min-height: 60px;
+}
+
+.output-preview a { color: var(--accent); }
+
+/* QR grid */
+.qr-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.qr-item {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  text-align: center;
+}
+
+.qr-item canvas { max-width: 100%; }
+.qr-item p {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 8px;
+  word-break: break-all;
+}
+
+/* Meta results */
+.meta-result {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.meta-result h4 {
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+
+.meta-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.meta-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.meta-table td:first-child {
+  color: var(--text-muted);
+  width: 160px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 11px;
+}
+
+/* Theme toggle */
+.theme-toggle {
+  position: fixed;
+  top: 16px;
+  right: 20px;
+  z-index: 200;
+}
+
+/* Delimiter specific */
+.delim-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 16px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.delim-option label {
+  margin-bottom: 4px;
+}
+
+.radio-group, .check-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.radio-pill, .check-pill {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.radio-pill:hover, .check-pill:hover { border-color: var(--border-hover); }
+.radio-pill.active, .check-pill.active { border-color: var(--accent); background: var(--accent-muted); color: var(--accent); }
+
+.radio-pill input, .check-pill input { display: none; }
+
+/* Toast notification */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--accent);
+  color: #000;
+  padding: 10px 20px;
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  transform: translateY(80px);
+  opacity: 0;
+  transition: all 0.3s;
+  z-index: 1000;
+}
+
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sidebar { width: 60px; padding: 16px 0; }
+  .sidebar-header { display: none; }
+  .nav-item span:not(.nav-icon) { display: none; }
+  .nav-item { padding: 12px; justify-content: center; }
+  .main-content { margin-left: 60px; padding: 20px; }
+  .two-panel, .form-row { grid-template-columns: 1fr; }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* Bulk import table */
+.bulk-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  margin-top: 12px;
+}
+.bulk-table th, .bulk-table td {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  text-align: left;
+}
+.bulk-table th {
+  background: var(--bg-elevated);
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+.bulk-table td { word-break: break-all; }
+
+.tag-input-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+/* UTM Builder */
+.utm-hint {
+  display: block;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 4px;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.utm-parsed-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-top: 12px;
+}
+
+.utm-parsed-table th {
+  text-align: left;
+  padding: 8px 12px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.utm-parsed-table td {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.utm-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.utm-status-ok { background: rgba(34,197,94,.15); color: #22c55e; }
+.utm-status-warn { background: rgba(245,158,11,.15); color: #f59e0b; }
+.utm-status-miss { background: rgba(239,68,68,.15); color: #ef4444; }
+.utm-status-info { background: rgba(59,130,246,.15); color: #3b82f6; }
+
+.utm-summary {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.utm-summary-card {
+  flex: 1;
+  min-width: 160px;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  text-align: center;
+}
+
+.utm-summary-card .stat-value { font-size: 20px; }
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<button class="btn theme-toggle" onclick="toggleTheme()" id="themeBtn">Light</button>
+
+<div class="app-container">
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h1>GM Toolkit</h1>
+      <p>Growth Marketer Tools</p>
+    </div>
+    <button class="nav-item active" data-tool="json-csv">
+      <span class="nav-icon">{}</span><span>JSON to CSV</span>
+    </button>
+    <button class="nav-item" data-tool="delimiter">
+      <span class="nav-icon">|</span><span>Delimiter Tool</span>
+    </button>
+    <button class="nav-item" data-tool="wordcount">
+      <span class="nav-icon">#</span><span>Word Count</span>
+    </button>
+    <button class="nav-item" data-tool="urlencode">
+      <span class="nav-icon">%</span><span>URL Encode</span>
+    </button>
+    <button class="nav-item" data-tool="mailto">
+      <span class="nav-icon">@</span><span>Mailto Gen</span>
+    </button>
+    <button class="nav-item" data-tool="qrcode">
+      <span class="nav-icon">Q</span><span>QR Code</span>
+    </button>
+    <button class="nav-item" data-tool="metadata">
+      <span class="nav-icon">&lt;&gt;</span><span>Meta Extract</span>
+    </button>
+    <button class="nav-item" data-tool="utm">
+      <span class="nav-icon">~</span><span>UTM Builder</span>
+    </button>
+  </nav>
+
+  <main class="main-content">
+
+    <!-- 1. JSON to CSV -->
+    <section class="tool-section active" id="tool-json-csv">
+      <div class="tool-header">
+        <h2>JSON to CSV Converter</h2>
+        <p>Paste JSON data and convert to CSV format with one-click export.</p>
+      </div>
+      <div class="two-panel">
+        <div>
+          <div class="panel-header">
+            <label>JSON Input</label>
+            <button class="btn" onclick="loadJsonSample()">Sample</button>
+          </div>
+          <textarea id="jsonInput" placeholder='[{"name":"Alice","email":"alice@example.com","plan":"pro"}]'></textarea>
+        </div>
+        <div>
+          <div class="panel-header">
+            <label>CSV Output</label>
+            <div class="btn-group">
+              <button class="btn" onclick="copyText('csvOutput')">Copy</button>
+              <button class="btn btn-primary" onclick="exportCsv()">Export .csv</button>
+            </div>
+          </div>
+          <textarea id="csvOutput" readonly></textarea>
+        </div>
+      </div>
+      <div style="margin-top:12px">
+        <button class="btn btn-primary" onclick="convertJsonToCsv()">Convert &rarr;</button>
+        <button class="btn btn-danger" onclick="clearFields('jsonInput','csvOutput')" style="margin-left:8px">Clear</button>
+      </div>
+    </section>
+
+    <!-- 2. Delimiter Tool -->
+    <section class="tool-section" id="tool-delimiter">
+      <div class="tool-header">
+        <h2>Delimiter / Text Converter</h2>
+        <p>Convert between delimited formats. Split, join, deduplicate, quote, and wrap your data.</p>
+      </div>
+
+      <div class="delim-options">
+        <div class="delim-option">
+          <label>Output Delimiter</label>
+          <div class="radio-group" id="delimiterChoice">
+            <label class="radio-pill active" data-val=","><input type="radio" name="delim" value="," checked>Comma</label>
+            <label class="radio-pill" data-val=";"><input type="radio" name="delim" value=";">Semicolon</label>
+            <label class="radio-pill" data-val="|"><input type="radio" name="delim" value="|">Pipe</label>
+            <label class="radio-pill" data-val=" "><input type="radio" name="delim" value=" ">Space</label>
+            <label class="radio-pill" data-val="\n"><input type="radio" name="delim" value="\n">New Line</label>
+          </div>
+        </div>
+        <div class="delim-option">
+          <label>Split Input By</label>
+          <div class="radio-group" id="explodeChoice">
+            <label class="radio-pill active" data-val="\n"><input type="radio" name="explode" value="\n" checked>New Lines</label>
+            <label class="radio-pill" data-val=" "><input type="radio" name="explode" value=" ">Spaces</label>
+            <label class="radio-pill" data-val=","><input type="radio" name="explode" value=",">Commas</label>
+            <label class="radio-pill" data-val=";"><input type="radio" name="explode" value=";">Semicolons</label>
+          </div>
+        </div>
+        <div class="delim-option">
+          <label>Quotes</label>
+          <div class="radio-group" id="quotesChoice">
+            <label class="radio-pill active" data-val="none"><input type="radio" name="quotes" value="none" checked>None</label>
+            <label class="radio-pill" data-val="double"><input type="radio" name="quotes" value="double">"Double"</label>
+            <label class="radio-pill" data-val="single"><input type="radio" name="quotes" value="single">'Single'</label>
+          </div>
+        </div>
+        <div class="delim-option">
+          <label>Tidy Up (trim whitespace)</label>
+          <div class="radio-group" id="tidyChoice">
+            <label class="radio-pill active" data-val="yes"><input type="radio" name="tidy" value="yes" checked>Yes</label>
+            <label class="radio-pill" data-val="no"><input type="radio" name="tidy" value="no">No</label>
+          </div>
+        </div>
+        <div class="delim-option">
+          <label>Remove Duplicates</label>
+          <div class="radio-group" id="dedupeChoice">
+            <label class="radio-pill active" data-val="no"><input type="radio" name="dedupe" value="no" checked>No</label>
+            <label class="radio-pill" data-val="yes"><input type="radio" name="dedupe" value="yes">Yes</label>
+          </div>
+        </div>
+        <div class="delim-option">
+          <label>Interval (new line every N)</label>
+          <input type="number" id="delimInterval" value="0" min="0" style="width:80px">
+        </div>
+        <div class="delim-option">
+          <label>Wrap Tag (each item)</label>
+          <div class="tag-input-row">
+            <input type="text" id="tagOpen" placeholder="Open e.g. <li>">
+            <input type="text" id="tagClose" placeholder="Close e.g. </li>">
+          </div>
+        </div>
+        <div class="delim-option">
+          <label>Interval Wrap Tag</label>
+          <div class="tag-input-row">
+            <input type="text" id="intervalTagOpen" placeholder="Open e.g. (">
+            <input type="text" id="intervalTagClose" placeholder="Close e.g. )">
+          </div>
+        </div>
+      </div>
+
+      <div class="two-panel">
+        <div>
+          <div class="panel-header">
+            <label>Input Data</label>
+            <button class="btn" onclick="loadDelimSample()">Sample</button>
+          </div>
+          <textarea id="delimInput" placeholder="Paste your data here, one item per line..."></textarea>
+        </div>
+        <div>
+          <div class="panel-header">
+            <label>Output</label>
+            <button class="btn" onclick="copyText('delimOutput')">Copy</button>
+          </div>
+          <textarea id="delimOutput" readonly></textarea>
+        </div>
+      </div>
+      <div style="margin-top:12px">
+        <button class="btn btn-primary" onclick="convertDelim()">Convert &rarr;</button>
+        <button class="btn btn-danger" onclick="clearFields('delimInput','delimOutput')" style="margin-left:8px">Clear</button>
+      </div>
+    </section>
+
+    <!-- 3. Word Count & Readability -->
+    <section class="tool-section" id="tool-wordcount">
+      <div class="tool-header">
+        <h2>Word Count & Readability Analyzer</h2>
+        <p>Count words, characters, sentences, paragraphs, and lines. Includes Hemingway-style readability grading.</p>
+      </div>
+      <div class="form-group">
+        <label>Text Input</label>
+        <textarea id="wcInput" style="min-height:200px" placeholder="Paste or type your text here..." oninput="analyzeText()"></textarea>
+      </div>
+      <div class="stats-grid" id="wcStats">
+        <div class="stat-card"><div class="stat-value" id="wcWords">0</div><div class="stat-label">Words</div></div>
+        <div class="stat-card"><div class="stat-value" id="wcChars">0</div><div class="stat-label">Characters</div></div>
+        <div class="stat-card"><div class="stat-value" id="wcCharsNoSpace">0</div><div class="stat-label">Chars (no spaces)</div></div>
+        <div class="stat-card"><div class="stat-value" id="wcSentences">0</div><div class="stat-label">Sentences</div></div>
+        <div class="stat-card"><div class="stat-value" id="wcParagraphs">0</div><div class="stat-label">Paragraphs</div></div>
+        <div class="stat-card"><div class="stat-value" id="wcLines">0</div><div class="stat-label">Total Lines</div></div>
+      </div>
+      <div class="form-group">
+        <label>Readability Score (Hemingway-style)</label>
+        <div id="readabilityResult">
+          <div class="reading-badge grade-good">Type or paste text above to analyze</div>
+        </div>
+        <div class="output-preview" id="readabilityDetails" style="margin-top:12px; font-size:12px; color:var(--text-muted)">
+          <p><strong>How it works:</strong> Uses the Automated Readability Index (ARI) formula based on characters per word and words per sentence. No API or LLM required.</p>
+          <p style="margin-top:8px"><strong>Grade levels:</strong> 1-6 = Easy (green) | 7-10 = Moderate (yellow) | 11+ = Difficult (red)</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. URL Encode/Decode -->
+    <section class="tool-section" id="tool-urlencode">
+      <div class="tool-header">
+        <h2>URL Encode / Decode</h2>
+        <p>Encode or decode URL components and full URLs.</p>
+      </div>
+      <div class="two-panel">
+        <div>
+          <div class="panel-header">
+            <label>Decoded (Plain Text)</label>
+            <button class="btn" onclick="copyText('urlDecoded')">Copy</button>
+          </div>
+          <textarea id="urlDecoded" placeholder="Hello World & foo=bar" oninput="urlEncode()"></textarea>
+        </div>
+        <div>
+          <div class="panel-header">
+            <label>Encoded</label>
+            <button class="btn" onclick="copyText('urlEncoded')">Copy</button>
+          </div>
+          <textarea id="urlEncoded" placeholder="Hello%20World%20%26%20foo%3Dbar" oninput="urlDecode()"></textarea>
+        </div>
+      </div>
+      <div style="margin-top:12px">
+        <label>Mode</label>
+        <div class="toggle-group">
+          <button class="toggle-btn active" id="encModeComponent" onclick="setEncMode('component')">encodeURIComponent</button>
+          <button class="toggle-btn" id="encModeFull" onclick="setEncMode('full')">encodeURI</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Mailto Generator -->
+    <section class="tool-section" id="tool-mailto">
+      <div class="tool-header">
+        <h2>Mailto Link Generator</h2>
+        <p>Generate mailto: links with subject, CC, BCC, and rich body content.</p>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>To (email address)</label>
+          <input type="email" id="mailTo" placeholder="user@example.com" oninput="generateMailto()">
+        </div>
+        <div class="form-group">
+          <label>Subject</label>
+          <input type="text" id="mailSubject" placeholder="Meeting Follow-up" oninput="generateMailto()">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>CC</label>
+          <input type="text" id="mailCc" placeholder="cc1@example.com, cc2@example.com" oninput="generateMailto()">
+        </div>
+        <div class="form-group">
+          <label>BCC</label>
+          <input type="text" id="mailBcc" placeholder="bcc@example.com" oninput="generateMailto()">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Email Body (plain text, supports line breaks)</label>
+        <textarea id="mailBody" placeholder="Hi there,&#10;&#10;Just following up on our conversation...&#10;&#10;Check out this link: https://example.com" oninput="generateMailto()"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Generated Mailto Link</label>
+        <div class="output-preview" id="mailtoOutput" style="cursor:pointer" onclick="copyMailto()">
+          <span style="color:var(--text-muted)">Fill in the fields above...</span>
+        </div>
+      </div>
+      <div class="btn-group" style="margin-top:12px">
+        <button class="btn btn-primary" onclick="copyMailto()">Copy Link</button>
+        <button class="btn" onclick="testMailto()">Test in Email Client</button>
+        <button class="btn" onclick="copyMailtoHtml()">Copy as HTML</button>
+      </div>
+    </section>
+
+    <!-- 6. QR Code Generator -->
+    <section class="tool-section" id="tool-qrcode">
+      <div class="tool-header">
+        <h2>URL to QR Code Generator</h2>
+        <p>Generate QR codes from URLs. Supports bulk import and export.</p>
+      </div>
+      <div class="form-group">
+        <label>Single URL</label>
+        <div style="display:flex;gap:8px">
+          <input type="url" id="qrSingleUrl" placeholder="https://example.com" style="flex:1">
+          <button class="btn btn-primary" onclick="generateSingleQr()">Generate</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Bulk Import (one URL per line)</label>
+        <textarea id="qrBulkUrls" placeholder="https://example.com&#10;https://google.com&#10;https://github.com" style="min-height:100px"></textarea>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-primary" onclick="generateBulkQr()">Generate All</button>
+        <button class="btn" onclick="exportQrAll()">Export All as PNG (zip)</button>
+        <button class="btn btn-danger" onclick="clearQr()">Clear All</button>
+      </div>
+      <div class="qr-grid" id="qrGrid"></div>
+    </section>
+
+    <!-- 7. Meta Data Extractor -->
+    <section class="tool-section" id="tool-metadata">
+      <div class="tool-header">
+        <h2>Meta Data Extractor</h2>
+        <p>Extract meta tags, Open Graph data, and Twitter Card info from any URL. Uses a CORS proxy for cross-origin requests.</p>
+      </div>
+      <div class="form-group">
+        <label>Single URL</label>
+        <div style="display:flex;gap:8px">
+          <input type="url" id="metaSingleUrl" placeholder="https://example.com" style="flex:1">
+          <button class="btn btn-primary" onclick="extractMeta()">Extract</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Bulk Import (one URL per line)</label>
+        <textarea id="metaBulkUrls" placeholder="https://example.com&#10;https://github.com" style="min-height:100px"></textarea>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-primary" onclick="extractMetaBulk()">Extract All</button>
+        <button class="btn" onclick="exportMetaCsv()">Export as CSV</button>
+        <button class="btn btn-danger" onclick="clearMeta()">Clear Results</button>
+      </div>
+      <div id="metaResults" style="margin-top:16px"></div>
+    </section>
+
+    <!-- 8. UTM Builder & Parser -->
+    <section class="tool-section" id="tool-utm">
+      <div class="tool-header">
+        <h2>UTM Builder & Parser</h2>
+        <p>Build campaign URLs with UTM parameters, or paste an existing URL to parse and validate its UTM tags.</p>
+      </div>
+
+      <!-- Mode toggle -->
+      <div class="form-group">
+        <div class="toggle-group">
+          <button class="toggle-btn active" id="utmModeCreate" onclick="setUtmMode('create')">Build URL</button>
+          <button class="toggle-btn" id="utmModeParse" onclick="setUtmMode('parse')">Parse &amp; Validate</button>
+        </div>
+      </div>
+
+      <!-- CREATE MODE -->
+      <div id="utmCreatePanel">
+        <div class="form-group">
+          <label>Website URL <span style="color:var(--danger)">*</span></label>
+          <input type="url" id="utmBaseUrl" placeholder="https://example.com/landing-page" oninput="buildUtmUrl()">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>utm_source <span style="color:var(--danger)">*</span></label>
+            <input type="text" id="utmSource" placeholder="e.g. google, newsletter, facebook" oninput="buildUtmUrl()">
+            <span class="utm-hint">Identifies where traffic comes from</span>
+          </div>
+          <div class="form-group">
+            <label>utm_medium <span style="color:var(--danger)">*</span></label>
+            <input type="text" id="utmMedium" placeholder="e.g. cpc, email, social, banner" oninput="buildUtmUrl()">
+            <span class="utm-hint">Marketing medium or channel type</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>utm_campaign <span style="color:var(--danger)">*</span></label>
+            <input type="text" id="utmCampaign" placeholder="e.g. spring_sale, product_launch" oninput="buildUtmUrl()">
+            <span class="utm-hint">Campaign name, promo, or slogan</span>
+          </div>
+          <div class="form-group">
+            <label>utm_term <span style="color:var(--text-muted)">(optional)</span></label>
+            <input type="text" id="utmTerm" placeholder="e.g. running+shoes, marketing+tools" oninput="buildUtmUrl()">
+            <span class="utm-hint">Paid search keywords</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>utm_content <span style="color:var(--text-muted)">(optional)</span></label>
+            <input type="text" id="utmContent" placeholder="e.g. logolink, textlink, hero_banner" oninput="buildUtmUrl()">
+            <span class="utm-hint">Differentiate ads or links pointing to the same URL</span>
+          </div>
+          <div class="form-group">
+            <label>utm_id <span style="color:var(--text-muted)">(optional — GA4)</span></label>
+            <input type="text" id="utmId" placeholder="e.g. abc.123" oninput="buildUtmUrl()">
+            <span class="utm-hint">Campaign ID for GA4 data import</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Generated URL</label>
+          <div class="output-preview" id="utmOutputUrl" style="min-height:48px;cursor:pointer" onclick="copyUtmUrl()">
+            <span style="color:var(--text-muted)">Fill in the required fields above...</span>
+          </div>
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="copyUtmUrl()">Copy URL</button>
+          <button class="btn" onclick="copyUtmShort()">Copy (without protocol)</button>
+          <button class="btn btn-danger" onclick="clearUtmBuilder()">Clear</button>
+        </div>
+      </div>
+
+      <!-- PARSE MODE -->
+      <div id="utmParsePanel" style="display:none">
+        <div class="form-group">
+          <label>Paste URL with UTM parameters</label>
+          <textarea id="utmParseInput" placeholder="https://example.com/page?utm_source=google&utm_medium=cpc&utm_campaign=spring_sale" style="min-height:80px" oninput="parseUtmUrl()"></textarea>
+        </div>
+        <div id="utmParseResults"></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+// ============ NAVIGATION ============
+document.querySelectorAll('.nav-item').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tool-section').forEach(s => s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tool-' + btn.dataset.tool).classList.add('active');
+  });
+});
+
+// Radio pill groups
+document.querySelectorAll('.radio-group').forEach(group => {
+  group.querySelectorAll('.radio-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      group.querySelectorAll('.radio-pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      pill.querySelector('input').checked = true;
+    });
+  });
+});
+
+// ============ THEME ============
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.getElementById('themeBtn').textContent = isDark ? 'Dark' : 'Light';
+}
+
+// ============ TOAST ============
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// ============ UTILITIES ============
+function copyText(id) {
+  const el = document.getElementById(id);
+  navigator.clipboard.writeText(el.value || el.textContent);
+  showToast('Copied!');
+}
+
+function clearFields(...ids) {
+  ids.forEach(id => document.getElementById(id).value = '');
+}
+
+function downloadFile(content, filename, mime) {
+  const blob = new Blob([content], { type: mime });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+// ============ 1. JSON TO CSV ============
+function loadJsonSample() {
+  document.getElementById('jsonInput').value = JSON.stringify([
+    { name: "Alice Johnson", email: "alice@startup.io", plan: "pro", mrr: 99 },
+    { name: "Bob Smith", email: "bob@agency.co", plan: "enterprise", mrr: 299 },
+    { name: "Carol White", email: "carol@brand.com", plan: "starter", mrr: 29 }
+  ], null, 2);
+}
+
+function flattenObject(obj, prefix = '') {
+  const result = {};
+  for (const [key, val] of Object.entries(obj)) {
+    const newKey = prefix ? prefix + '.' + key : key;
+    if (val && typeof val === 'object' && !Array.isArray(val)) {
+      Object.assign(result, flattenObject(val, newKey));
+    } else if (Array.isArray(val)) {
+      // Check if array of primitives vs objects
+      const hasPrimitives = val.every(v => typeof v !== 'object' || v === null);
+      if (hasPrimitives) {
+        result[newKey] = val.join('; ');
+      } else {
+        // Array of objects: flatten each and create numbered keys
+        val.forEach((item, i) => {
+          if (item && typeof item === 'object') {
+            Object.assign(result, flattenObject(item, newKey + '[' + i + ']'));
+          } else {
+            result[newKey + '[' + i + ']'] = item ?? '';
+          }
+        });
+      }
+    } else {
+      result[newKey] = val ?? '';
+    }
+  }
+  return result;
+}
+
+function convertJsonToCsv() {
+  const input = document.getElementById('jsonInput').value.trim();
+  if (!input) return showToast('Paste JSON data first');
+  try {
+    let data = JSON.parse(input);
+
+    // Handle single object wrapping an array (e.g. { messages: [...] })
+    if (!Array.isArray(data) && typeof data === 'object') {
+      // Check if there's a single key whose value is an array of objects
+      const keys = Object.keys(data);
+      const arrayKey = keys.find(k => Array.isArray(data[k]) && data[k].length > 0 && typeof data[k][0] === 'object');
+      if (arrayKey) {
+        // Spread parent-level non-array fields into each child row
+        const parentFields = {};
+        keys.forEach(k => { if (k !== arrayKey) parentFields[k] = data[k]; });
+        data = data[arrayKey].map(item => ({ ...parentFields, ...item }));
+      } else {
+        data = [data];
+      }
+    }
+
+    if (!Array.isArray(data)) data = [data];
+    if (data.length === 0) return showToast('Empty array');
+
+    // Flatten all rows
+    const flatData = data.map(obj => flattenObject(obj));
+    const headers = [...new Set(flatData.flatMap(obj => Object.keys(obj)))];
+
+    const escapeCsvVal = (val) => {
+      let s = String(val ?? '');
+      if (s.includes(',') || s.includes('"') || s.includes('\n')) {
+        s = '"' + s.replace(/"/g, '""') + '"';
+      }
+      return s;
+    };
+
+    const csvRows = [headers.map(escapeCsvVal).join(',')];
+    flatData.forEach(obj => {
+      csvRows.push(headers.map(h => escapeCsvVal(obj[h])).join(','));
+    });
+    document.getElementById('csvOutput').value = csvRows.join('\n');
+    showToast('Converted!');
+  } catch (e) {
+    showToast('Invalid JSON: ' + e.message);
+  }
+}
+
+function exportCsv() {
+  const csv = document.getElementById('csvOutput').value;
+  if (!csv) return showToast('Nothing to export');
+  downloadFile(csv, 'export.csv', 'text/csv');
+  showToast('CSV downloaded!');
+}
+
+// ============ 2. DELIMITER TOOL ============
+function loadDelimSample() {
+  document.getElementById('delimInput').value = 'apple\nbanana\ncherry\napple\ndate\nbanana\nelderberry';
+}
+
+function getRadioValue(name) {
+  const checked = document.querySelector(`input[name="${name}"]:checked`);
+  return checked ? checked.value : '';
+}
+
+function convertDelim() {
+  const raw = document.getElementById('delimInput').value;
+  if (!raw.trim()) return showToast('Enter data first');
+
+  const splitBy = getRadioValue('explode');
+  const joinWith = getRadioValue('delim');
+  const quoteStyle = getRadioValue('quotes');
+  const tidy = getRadioValue('tidy') === 'yes';
+  const dedupe = getRadioValue('dedupe') === 'yes';
+  const interval = parseInt(document.getElementById('delimInterval').value) || 0;
+  const tagOpen = document.getElementById('tagOpen').value;
+  const tagClose = document.getElementById('tagClose').value;
+  const iTagOpen = document.getElementById('intervalTagOpen').value;
+  const iTagClose = document.getElementById('intervalTagClose').value;
+
+  const splitter = splitBy === '\\n' ? /\n/ : new RegExp(splitBy.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+  let items = raw.split(splitter);
+
+  if (tidy) items = items.map(s => s.trim()).filter(s => s.length > 0);
+  if (dedupe) items = [...new Set(items)];
+
+  // Apply quotes
+  items = items.map(item => {
+    if (quoteStyle === 'double') return '"' + item + '"';
+    if (quoteStyle === 'single') return "'" + item + "'";
+    return item;
+  });
+
+  // Apply tags
+  if (tagOpen || tagClose) {
+    items = items.map(item => (tagOpen || '') + item + (tagClose || ''));
+  }
+
+  const delim = joinWith === '\\n' ? '\n' : joinWith;
+
+  // Apply interval
+  if (interval > 0) {
+    const chunks = [];
+    for (let i = 0; i < items.length; i += interval) {
+      let chunk = items.slice(i, i + interval).join(delim);
+      if (iTagOpen || iTagClose) {
+        chunk = (iTagOpen || '') + chunk + (iTagClose || '');
+      }
+      chunks.push(chunk);
+    }
+    document.getElementById('delimOutput').value = chunks.join('\n');
+  } else {
+    document.getElementById('delimOutput').value = items.join(delim);
+  }
+
+  showToast('Converted!');
+}
+
+// ============ 3. WORD COUNT & READABILITY ============
+function analyzeText() {
+  const text = document.getElementById('wcInput').value;
+
+  // Counts
+  const chars = text.length;
+  const charsNoSpace = text.replace(/\s/g, '').length;
+  const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+  const sentences = text.trim() ? (text.match(/[.!?]+(\s|$)/g) || []).length || (text.trim().length > 0 ? 1 : 0) : 0;
+  const paragraphs = text.trim() ? text.split(/\n\s*\n/).filter(p => p.trim()).length : 0;
+  const lines = text ? text.split('\n').length : 0;
+
+  document.getElementById('wcWords').textContent = words;
+  document.getElementById('wcChars').textContent = chars;
+  document.getElementById('wcCharsNoSpace').textContent = charsNoSpace;
+  document.getElementById('wcSentences').textContent = sentences;
+  document.getElementById('wcParagraphs').textContent = paragraphs;
+  document.getElementById('wcLines').textContent = lines;
+
+  // Automated Readability Index
+  if (words >= 10 && sentences >= 1) {
+    const ari = 4.71 * (chars / words) + 0.5 * (words / sentences) - 21.43;
+    const grade = Math.max(1, Math.round(ari));
+    const gradeLabels = {
+      1:'Kindergarten',2:'1st Grade',3:'2nd Grade',4:'3rd Grade',5:'4th Grade',
+      6:'5th Grade',7:'6th Grade',8:'7th Grade',9:'8th Grade',10:'10th Grade',
+      11:'11th Grade',12:'12th Grade',13:'College',14:'College+'
+    };
+
+    let cssClass, label;
+    if (grade <= 6) { cssClass = 'grade-good'; label = 'Easy'; }
+    else if (grade <= 10) { cssClass = 'grade-ok'; label = 'Moderate'; }
+    else { cssClass = 'grade-hard'; label = 'Difficult'; }
+
+    const gradeName = gradeLabels[Math.min(grade, 14)] || 'College+';
+    document.getElementById('readabilityResult').innerHTML =
+      `<div class="reading-badge ${cssClass}">Grade ${grade} &mdash; ${gradeName} &mdash; ${label}</div>` +
+      `<div style="margin-top:8px;font-size:12px;color:var(--text-muted)">` +
+      `ARI Score: ${ari.toFixed(2)} | Avg chars/word: ${(chars/words).toFixed(1)} | Avg words/sentence: ${(words/sentences).toFixed(1)}</div>`;
+  } else if (words > 0) {
+    document.getElementById('readabilityResult').innerHTML =
+      `<div class="reading-badge grade-ok">Need at least 10 words and 1 sentence for grading</div>`;
+  } else {
+    document.getElementById('readabilityResult').innerHTML =
+      `<div class="reading-badge grade-good">Type or paste text above to analyze</div>`;
+  }
+}
+
+// ============ 4. URL ENCODE/DECODE ============
+let encMode = 'component';
+
+function setEncMode(mode) {
+  encMode = mode;
+  document.getElementById('encModeComponent').classList.toggle('active', mode === 'component');
+  document.getElementById('encModeFull').classList.toggle('active', mode === 'full');
+  urlEncode();
+}
+
+function urlEncode() {
+  const val = document.getElementById('urlDecoded').value;
+  try {
+    document.getElementById('urlEncoded').value = encMode === 'component'
+      ? encodeURIComponent(val) : encodeURI(val);
+  } catch(e) { /* ignore */ }
+}
+
+function urlDecode() {
+  const val = document.getElementById('urlEncoded').value;
+  try {
+    document.getElementById('urlDecoded').value = encMode === 'component'
+      ? decodeURIComponent(val) : decodeURI(val);
+  } catch(e) { /* ignore */ }
+}
+
+// ============ 5. MAILTO GENERATOR ============
+let currentMailto = '';
+
+function generateMailto() {
+  const to = document.getElementById('mailTo').value.trim();
+  const subject = document.getElementById('mailSubject').value;
+  const cc = document.getElementById('mailCc').value.trim();
+  const bcc = document.getElementById('mailBcc').value.trim();
+  const body = document.getElementById('mailBody').value;
+
+  if (!to) {
+    document.getElementById('mailtoOutput').innerHTML = '<span style="color:var(--text-muted)">Enter a recipient email address...</span>';
+    currentMailto = '';
+    return;
+  }
+
+  const params = [];
+  if (subject) params.push('subject=' + encodeURIComponent(subject));
+  if (cc) params.push('cc=' + encodeURIComponent(cc));
+  if (bcc) params.push('bcc=' + encodeURIComponent(bcc));
+  if (body) params.push('body=' + encodeURIComponent(body));
+
+  currentMailto = 'mailto:' + encodeURIComponent(to) + (params.length ? '?' + params.join('&') : '');
+
+  document.getElementById('mailtoOutput').innerHTML =
+    `<a href="${currentMailto}" style="color:var(--accent);word-break:break-all">${currentMailto}</a>`;
+}
+
+function copyMailto() {
+  if (!currentMailto) return showToast('Generate a link first');
+  navigator.clipboard.writeText(currentMailto);
+  showToast('Mailto link copied!');
+}
+
+function testMailto() {
+  if (!currentMailto) return showToast('Generate a link first');
+  window.location.href = currentMailto;
+}
+
+function copyMailtoHtml() {
+  if (!currentMailto) return showToast('Generate a link first');
+  const subject = document.getElementById('mailSubject').value || 'Email Us';
+  const html = `<a href="${currentMailto}">${subject}</a>`;
+  navigator.clipboard.writeText(html);
+  showToast('HTML copied!');
+}
+
+// ============ 6. QR CODE GENERATOR ============
+let qrItems = [];
+
+function generateSingleQr() {
+  const url = document.getElementById('qrSingleUrl').value.trim();
+  if (!url) return showToast('Enter a URL');
+  addQr(url);
+}
+
+function generateBulkQr() {
+  const urls = document.getElementById('qrBulkUrls').value.trim().split('\n').filter(u => u.trim());
+  if (!urls.length) return showToast('Enter URLs (one per line)');
+  urls.forEach(u => addQr(u.trim()));
+  showToast(`Generated ${urls.length} QR codes`);
+}
+
+function addQr(url) {
+  const grid = document.getElementById('qrGrid');
+  const item = document.createElement('div');
+  item.className = 'qr-item';
+
+  const qrDiv = document.createElement('div');
+  item.appendChild(qrDiv);
+
+  const label = document.createElement('p');
+  label.textContent = url;
+  item.appendChild(label);
+
+  const dlBtn = document.createElement('button');
+  dlBtn.className = 'btn';
+  dlBtn.textContent = 'Download';
+  dlBtn.style.marginTop = '8px';
+  dlBtn.style.fontSize = '11px';
+  item.appendChild(dlBtn);
+
+  grid.appendChild(item);
+
+  const qr = new QRCode(qrDiv, {
+    text: url,
+    width: 160,
+    height: 160,
+    colorDark: '#000000',
+    colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.H
+  });
+
+  setTimeout(() => {
+    const canvas = qrDiv.querySelector('canvas');
+    if (canvas) {
+      dlBtn.onclick = () => {
+        const a = document.createElement('a');
+        a.download = 'qr-' + url.replace(/[^a-z0-9]/gi, '_').substring(0, 30) + '.png';
+        a.href = canvas.toDataURL('image/png');
+        a.click();
+      };
+      qrItems.push({ url, canvas });
+    }
+  }, 100);
+}
+
+function exportQrAll() {
+  if (!qrItems.length) return showToast('No QR codes to export');
+  // Export individually since zip requires a library
+  qrItems.forEach(({ url, canvas }) => {
+    const a = document.createElement('a');
+    a.download = 'qr-' + url.replace(/[^a-z0-9]/gi, '_').substring(0, 30) + '.png';
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+  });
+  showToast(`Exported ${qrItems.length} QR codes`);
+}
+
+function clearQr() {
+  document.getElementById('qrGrid').innerHTML = '';
+  qrItems = [];
+  showToast('Cleared');
+}
+
+// ============ 7. META DATA EXTRACTOR ============
+let metaResults = [];
+const CORS_PROXIES = [
+  'https://api.allorigins.win/raw?url=',
+  'https://corsproxy.io/?'
+];
+
+async function fetchWithProxy(url) {
+  for (const proxy of CORS_PROXIES) {
+    try {
+      const resp = await fetch(proxy + encodeURIComponent(url), { signal: AbortSignal.timeout(10000) });
+      if (resp.ok) return await resp.text();
+    } catch(e) { continue; }
+  }
+  throw new Error('Could not fetch URL (CORS proxy failed)');
+}
+
+function parseMeta(html, url) {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  const getMeta = (attr, val) => {
+    const el = doc.querySelector(`meta[${attr}="${val}"]`);
+    return el ? (el.getAttribute('content') || '') : '';
+  };
+
+  return {
+    url,
+    title: doc.querySelector('title')?.textContent || '',
+    description: getMeta('name', 'description') || getMeta('property', 'og:description'),
+    canonical: doc.querySelector('link[rel="canonical"]')?.href || '',
+    ogTitle: getMeta('property', 'og:title'),
+    ogDescription: getMeta('property', 'og:description'),
+    ogImage: getMeta('property', 'og:image'),
+    ogType: getMeta('property', 'og:type'),
+    ogUrl: getMeta('property', 'og:url'),
+    ogSiteName: getMeta('property', 'og:site_name'),
+    twitterCard: getMeta('name', 'twitter:card'),
+    twitterTitle: getMeta('name', 'twitter:title'),
+    twitterDescription: getMeta('name', 'twitter:description'),
+    twitterImage: getMeta('name', 'twitter:image'),
+    twitterSite: getMeta('name', 'twitter:site'),
+    robots: getMeta('name', 'robots'),
+    viewport: getMeta('name', 'viewport'),
+    charset: doc.querySelector('meta[charset]')?.getAttribute('charset') || '',
+    favicon: doc.querySelector('link[rel="icon"], link[rel="shortcut icon"]')?.href || ''
+  };
+}
+
+function renderMetaResult(data) {
+  const entries = Object.entries(data).filter(([k,v]) => v && k !== 'url');
+  return `
+    <div class="meta-result">
+      <h4>${data.url}</h4>
+      <table class="meta-table">
+        ${entries.map(([k,v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join('')}
+      </table>
+    </div>`;
+}
+
+async function extractMeta() {
+  const url = document.getElementById('metaSingleUrl').value.trim();
+  if (!url) return showToast('Enter a URL');
+
+  const container = document.getElementById('metaResults');
+  container.innerHTML = '<p style="color:var(--text-muted)">Fetching...</p>';
+
+  try {
+    const html = await fetchWithProxy(url);
+    const data = parseMeta(html, url);
+    metaResults.push(data);
+    container.innerHTML = renderMetaResult(data);
+    showToast('Extracted!');
+  } catch(e) {
+    container.innerHTML = `<p style="color:var(--danger)">Error: ${e.message}</p>`;
+  }
+}
+
+async function extractMetaBulk() {
+  const urls = document.getElementById('metaBulkUrls').value.trim().split('\n').filter(u => u.trim());
+  if (!urls.length) return showToast('Enter URLs');
+
+  const container = document.getElementById('metaResults');
+  container.innerHTML = '<p style="color:var(--text-muted)">Fetching ' + urls.length + ' URLs...</p>';
+
+  const results = [];
+  for (const url of urls) {
+    try {
+      const html = await fetchWithProxy(url.trim());
+      const data = parseMeta(html, url.trim());
+      results.push(data);
+      metaResults.push(data);
+    } catch(e) {
+      results.push({ url: url.trim(), error: e.message });
+    }
+  }
+
+  container.innerHTML = results.map(d => d.error
+    ? `<div class="meta-result"><h4>${d.url}</h4><p style="color:var(--danger)">Error: ${d.error}</p></div>`
+    : renderMetaResult(d)
+  ).join('');
+  showToast(`Extracted ${results.length} results`);
+}
+
+function exportMetaCsv() {
+  if (!metaResults.length) return showToast('No results to export');
+  const headers = Object.keys(metaResults[0]);
+  const csv = [headers.join(','), ...metaResults.map(r =>
+    headers.map(h => {
+      let v = String(r[h] || '');
+      if (v.includes(',') || v.includes('"')) v = '"' + v.replace(/"/g, '""') + '"';
+      return v;
+    }).join(',')
+  )].join('\n');
+  downloadFile(csv, 'metadata-export.csv', 'text/csv');
+  showToast('CSV exported!');
+}
+
+function clearMeta() {
+  document.getElementById('metaResults').innerHTML = '';
+  metaResults = [];
+  showToast('Cleared');
+}
+
+// ============ 8. UTM BUILDER & PARSER ============
+let currentUtmUrl = '';
+
+function setUtmMode(mode) {
+  document.getElementById('utmModeCreate').classList.toggle('active', mode === 'create');
+  document.getElementById('utmModeParse').classList.toggle('active', mode === 'parse');
+  document.getElementById('utmCreatePanel').style.display = mode === 'create' ? 'block' : 'none';
+  document.getElementById('utmParsePanel').style.display = mode === 'parse' ? 'block' : 'none';
+}
+
+function buildUtmUrl() {
+  const base = document.getElementById('utmBaseUrl').value.trim();
+  const source = document.getElementById('utmSource').value.trim();
+  const medium = document.getElementById('utmMedium').value.trim();
+  const campaign = document.getElementById('utmCampaign').value.trim();
+  const term = document.getElementById('utmTerm').value.trim();
+  const content = document.getElementById('utmContent').value.trim();
+  const id = document.getElementById('utmId').value.trim();
+
+  if (!base || !source || !medium || !campaign) {
+    document.getElementById('utmOutputUrl').innerHTML =
+      '<span style="color:var(--text-muted)">Fill in all required fields (URL, source, medium, campaign)...</span>';
+    currentUtmUrl = '';
+    return;
+  }
+
+  const params = [];
+  params.push('utm_source=' + encodeURIComponent(source));
+  params.push('utm_medium=' + encodeURIComponent(medium));
+  params.push('utm_campaign=' + encodeURIComponent(campaign));
+  if (term) params.push('utm_term=' + encodeURIComponent(term));
+  if (content) params.push('utm_content=' + encodeURIComponent(content));
+  if (id) params.push('utm_id=' + encodeURIComponent(id));
+
+  const separator = base.includes('?') ? '&' : '?';
+  currentUtmUrl = base + separator + params.join('&');
+
+  document.getElementById('utmOutputUrl').innerHTML =
+    '<span style="word-break:break-all">' + highlightUtmParams(currentUtmUrl) + '</span>';
+}
+
+function highlightUtmParams(url) {
+  return url.replace(/(utm_\w+)=/g, '<span style="color:var(--accent);font-weight:600">$1</span>=');
+}
+
+function copyUtmUrl() {
+  if (!currentUtmUrl) return showToast('Build a URL first');
+  navigator.clipboard.writeText(currentUtmUrl);
+  showToast('URL copied!');
+}
+
+function copyUtmShort() {
+  if (!currentUtmUrl) return showToast('Build a URL first');
+  navigator.clipboard.writeText(currentUtmUrl.replace(/^https?:\/\//, ''));
+  showToast('Copied without protocol!');
+}
+
+function clearUtmBuilder() {
+  ['utmBaseUrl','utmSource','utmMedium','utmCampaign','utmTerm','utmContent','utmId'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('utmOutputUrl').innerHTML =
+    '<span style="color:var(--text-muted)">Fill in the required fields above...</span>';
+  currentUtmUrl = '';
+}
+
+function parseUtmUrl() {
+  const raw = document.getElementById('utmParseInput').value.trim();
+  const container = document.getElementById('utmParseResults');
+
+  if (!raw) {
+    container.innerHTML = '';
+    return;
+  }
+
+  let url;
+  try {
+    url = new URL(raw.startsWith('http') ? raw : 'https://' + raw);
+  } catch(e) {
+    container.innerHTML = '<p style="color:var(--danger);margin-top:12px">Invalid URL format</p>';
+    return;
+  }
+
+  const params = url.searchParams;
+
+  // Standard UTM params with requirements
+  const utmFields = [
+    { key: 'utm_source', label: 'Source', required: true, desc: 'Referrer (e.g. google, newsletter)' },
+    { key: 'utm_medium', label: 'Medium', required: true, desc: 'Marketing medium (e.g. cpc, email, social)' },
+    { key: 'utm_campaign', label: 'Campaign', required: true, desc: 'Campaign name or promo code' },
+    { key: 'utm_term', label: 'Term', required: false, desc: 'Paid search keywords' },
+    { key: 'utm_content', label: 'Content', required: false, desc: 'Ad or link differentiator' },
+    { key: 'utm_id', label: 'Campaign ID', required: false, desc: 'GA4 campaign identifier' },
+  ];
+
+  // Best-practice checks
+  const warnings = [];
+  const utmCount = { found: 0, required: 0, requiredPresent: 0 };
+
+  let rows = '';
+  utmFields.forEach(f => {
+    const val = params.get(f.key);
+    const hasParam = params.has(f.key);
+    if (f.required) utmCount.required++;
+
+    let status, statusLabel, valDisplay;
+
+    if (hasParam && val) {
+      utmCount.found++;
+      if (f.required) utmCount.requiredPresent++;
+      valDisplay = decodeURIComponent(val);
+
+      // Validation checks
+      const issues = [];
+      if (val !== val.toLowerCase()) issues.push('contains uppercase (best practice: lowercase)');
+      if (val.includes(' ')) issues.push('contains spaces (use hyphens or underscores)');
+      if (/[^\w\-\.+%]/.test(val) && val === encodeURIComponent(decodeURIComponent(val))) {
+        // fine, it's properly encoded
+      } else if (/[^\w\-\.+]/.test(decodeURIComponent(val))) {
+        issues.push('contains special characters');
+      }
+
+      if (issues.length > 0) {
+        status = 'utm-status-warn';
+        statusLabel = 'Warning';
+        warnings.push(f.key + ': ' + issues.join(', '));
+        valDisplay += '<div style="font-size:11px;color:var(--warning);margin-top:4px">' + issues.join(', ') + '</div>';
+      } else {
+        status = 'utm-status-ok';
+        statusLabel = 'Valid';
+      }
+    } else if (hasParam && !val) {
+      utmCount.found++;
+      status = 'utm-status-warn';
+      statusLabel = 'Empty';
+      valDisplay = '<span style="color:var(--warning)">Parameter present but empty</span>';
+      warnings.push(f.key + ' is present but has no value');
+    } else if (f.required) {
+      status = 'utm-status-miss';
+      statusLabel = 'Missing';
+      valDisplay = '<span style="color:var(--danger)">Required parameter missing</span>';
+    } else {
+      status = 'utm-status-info';
+      statusLabel = 'Not set';
+      valDisplay = '<span style="color:var(--text-muted)">&mdash;</span>';
+    }
+
+    rows += '<tr>' +
+      '<td><strong>' + f.key + '</strong><div style="font-size:10px;color:var(--text-muted)">' + f.desc + '</div></td>' +
+      '<td>' + (valDisplay || '') + '</td>' +
+      '<td><span class="utm-status ' + status + '">' + statusLabel + '</span></td>' +
+      '</tr>';
+  });
+
+  // Check for extra non-UTM query params
+  const extraParams = [];
+  params.forEach((v, k) => {
+    if (!k.startsWith('utm_')) extraParams.push(k + '=' + v);
+  });
+
+  // Overall score
+  const allRequiredPresent = utmCount.requiredPresent === utmCount.required;
+  const hasWarnings = warnings.length > 0;
+
+  let overallClass, overallLabel;
+  if (allRequiredPresent && !hasWarnings) {
+    overallClass = 'grade-good';
+    overallLabel = 'All UTM parameters look good';
+  } else if (allRequiredPresent && hasWarnings) {
+    overallClass = 'grade-ok';
+    overallLabel = 'UTM params present but has warnings';
+  } else {
+    overallClass = 'grade-hard';
+    overallLabel = 'Missing required UTM parameters';
+  }
+
+  container.innerHTML =
+    '<div class="reading-badge ' + overallClass + '" style="margin-bottom:16px">' + overallLabel + '</div>' +
+    '<table class="utm-parsed-table">' +
+    '<tr><th>Parameter</th><th>Value</th><th>Status</th></tr>' +
+    rows +
+    '</table>' +
+    (extraParams.length > 0 ?
+      '<div style="margin-top:12px;font-size:12px;color:var(--text-muted)"><strong>Other query params:</strong> ' +
+      extraParams.map(p => '<code style="background:var(--bg-elevated);padding:2px 6px;border-radius:3px">' + p + '</code>').join(' ') +
+      '</div>' : '') +
+    '<div class="utm-summary">' +
+      '<div class="utm-summary-card"><div class="stat-value" style="color:var(--accent)">' + utmCount.found + '/' + utmFields.length + '</div><div class="stat-label">UTM Params Found</div></div>' +
+      '<div class="utm-summary-card"><div class="stat-value" style="color:' + (allRequiredPresent ? 'var(--accent)' : 'var(--danger)') + '">' + utmCount.requiredPresent + '/' + utmCount.required + '</div><div class="stat-label">Required Present</div></div>' +
+      '<div class="utm-summary-card"><div class="stat-value" style="color:' + (hasWarnings ? 'var(--warning)' : 'var(--accent)') + '">' + warnings.length + '</div><div class="stat-label">Warnings</div></div>' +
+    '</div>';
+}
+</script>
+</body>
+</html>

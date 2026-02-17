@@ -623,6 +623,9 @@ input[type="file"]::file-selector-button:hover { background: var(--accent-hover)
     <button class="nav-item" data-tool="retention">
       <span class="nav-icon">R</span><span>Retention</span>
     </button>
+    <button class="nav-item" data-tool="tts">
+      <span class="nav-icon">S</span><span>Text to Speech</span>
+    </button>
   </nav>
 
   <main class="main-content">
@@ -1051,6 +1054,64 @@ input[type="file"]::file-selector-button:hover { background: var(--accent-hover)
           </div>
         </div>
       </div>
+    </section>
+
+    <!-- 10. Text to Speech -->
+    <section class="tool-section" id="tool-tts">
+      <div class="tool-header">
+        <h2>Paste & Listen</h2>
+        <p>Paste text and have it read aloud using your browser's built-in speech synthesis. No API required.</p>
+      </div>
+
+      <div class="output-preview" style="margin-bottom:16px;font-size:12px;margin-top:0">
+        Works best for shorter passages (under <strong style="color:var(--accent)">570 words</strong>, about <strong style="color:var(--accent)">4 minutes</strong> at 1x speed).
+      </div>
+
+      <div class="form-group">
+        <label>Text to Speak</label>
+        <textarea id="ttsText" style="min-height:200px" placeholder="Paste your text here..." oninput="updateTtsInfo()"></textarea>
+      </div>
+
+      <!-- Info bar -->
+      <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:16px">
+        <div class="stat-card"><div class="stat-value" id="ttsCharCount" style="font-size:18px">0</div><div class="stat-label">Characters</div></div>
+        <div class="stat-card"><div class="stat-value" id="ttsWordCount" style="font-size:18px">0</div><div class="stat-label">Words</div></div>
+        <div class="stat-card"><div class="stat-value" id="ttsDuration" style="font-size:18px">0s</div><div class="stat-label">Est. Duration</div></div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Voice</label>
+          <select id="ttsVoiceSelect"></select>
+        </div>
+        <div class="form-group">
+          <label>Speed</label>
+          <select id="ttsSpeedSelect" onchange="updateTtsInfo()">
+            <option value="0.75">0.75x</option>
+            <option value="1" selected>1x (Normal)</option>
+            <option value="1.25">1.25x</option>
+            <option value="1.5">1.5x</option>
+            <option value="2">2x</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Playback controls -->
+      <div class="btn-group" style="margin-bottom:12px">
+        <button class="btn btn-primary" onclick="ttsSpeak()">Read Aloud</button>
+        <button class="btn" onclick="ttsPause()">Pause</button>
+        <button class="btn" onclick="ttsResume()">Resume</button>
+        <button class="btn btn-danger" onclick="ttsStop()">Stop</button>
+      </div>
+
+      <!-- Share controls -->
+      <div class="btn-group" style="margin-bottom:12px">
+        <button class="btn" onclick="ttsCopy()">Copy Text</button>
+        <button class="btn" onclick="ttsSendSms()">SMS</button>
+        <button class="btn" onclick="ttsSendEmail()">Email</button>
+      </div>
+
+      <div id="ttsStatus" style="font-size:12px;color:var(--text-muted);min-height:20px"></div>
     </section>
 
   </main>
@@ -1976,6 +2037,116 @@ function clearRetention() {
   if (retentionChartInstance) { retentionChartInstance.destroy(); retentionChartInstance = null; }
   retentionCsvData = '';
   showToast('Cleared');
+}
+
+// ============ 10. TEXT TO SPEECH ============
+let ttsVoices = [];
+let ttsUtterance = null;
+let ttsStoppedByUser = false;
+const TTS_WPM = 150;
+
+function ttsPopulateVoices() {
+  ttsVoices = window.speechSynthesis.getVoices();
+  const sel = document.getElementById('ttsVoiceSelect');
+  sel.innerHTML = '';
+  ttsVoices.forEach((voice, i) => {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = voice.name + ' (' + voice.lang + ')' + (voice.default ? ' [default]' : '');
+    sel.appendChild(opt);
+  });
+  // Prefer Google US English > Aaron > first
+  let idx = 0;
+  for (let i = 0; i < ttsVoices.length; i++) {
+    if (ttsVoices[i].name === 'Google US English') { idx = i; break; }
+  }
+  if (!ttsVoices[idx] || ttsVoices[idx].name !== 'Google US English') {
+    for (let i = 0; i < ttsVoices.length; i++) {
+      if (ttsVoices[i].name.toLowerCase().includes('aaron') && ttsVoices[i].lang.toLowerCase() === 'en-us') { idx = i; break; }
+    }
+  }
+  sel.value = idx;
+}
+
+ttsPopulateVoices();
+if (speechSynthesis.onvoiceschanged !== undefined) {
+  speechSynthesis.onvoiceschanged = ttsPopulateVoices;
+}
+
+function updateTtsInfo() {
+  const text = document.getElementById('ttsText').value.trim();
+  const speed = parseFloat(document.getElementById('ttsSpeedSelect').value);
+  const chars = text.length;
+  const words = text ? text.split(/\s+/).filter(Boolean).length : 0;
+  let durMin = words > 0 ? words / (TTS_WPM * speed) : 0;
+  const m = Math.floor(durMin);
+  const s = Math.round((durMin - m) * 60);
+  const durStr = m > 0 ? m + 'm ' + (s < 10 ? '0' : '') + s + 's' : s + 's';
+
+  document.getElementById('ttsCharCount').textContent = chars;
+  document.getElementById('ttsWordCount').textContent = words;
+  document.getElementById('ttsDuration').textContent = words > 0 ? durStr + ' @ ' + speed + 'x' : '0s';
+}
+
+function ttsSpeak() {
+  const text = document.getElementById('ttsText').value.trim();
+  if (!text) return showToast('Paste some text first');
+  if (window.speechSynthesis.speaking || window.speechSynthesis.paused) {
+    window.speechSynthesis.cancel();
+  }
+  ttsStoppedByUser = false;
+  ttsUtterance = new SpeechSynthesisUtterance(text);
+  const voiceIdx = document.getElementById('ttsVoiceSelect').value;
+  ttsUtterance.voice = ttsVoices[voiceIdx];
+  ttsUtterance.rate = parseFloat(document.getElementById('ttsSpeedSelect').value);
+  ttsUtterance.onend = () => {
+    document.getElementById('ttsStatus').textContent = 'Done speaking.';
+  };
+  ttsUtterance.onerror = (e) => {
+    if (!ttsStoppedByUser && e.error !== 'interrupted') {
+      document.getElementById('ttsStatus').textContent = 'Error: ' + e.error;
+    }
+  };
+  const voiceName = ttsUtterance.voice ? ttsUtterance.voice.name : 'default';
+  document.getElementById('ttsStatus').textContent = 'Speaking (' + voiceName + ', ' + ttsUtterance.rate + 'x)...';
+  window.speechSynthesis.speak(ttsUtterance);
+}
+
+function ttsPause() {
+  window.speechSynthesis.pause();
+  document.getElementById('ttsStatus').textContent = 'Paused.';
+}
+
+function ttsResume() {
+  window.speechSynthesis.resume();
+  document.getElementById('ttsStatus').textContent = 'Resumed.';
+}
+
+function ttsStop() {
+  if (window.speechSynthesis.speaking || window.speechSynthesis.paused) {
+    ttsStoppedByUser = true;
+    window.speechSynthesis.cancel();
+    document.getElementById('ttsStatus').textContent = 'Stopped.';
+  }
+}
+
+function ttsCopy() {
+  const text = document.getElementById('ttsText').value;
+  if (!text) return showToast('Nothing to copy');
+  navigator.clipboard.writeText(text);
+  showToast('Copied!');
+}
+
+function ttsSendSms() {
+  const text = document.getElementById('ttsText').value;
+  if (!text) return showToast('Nothing to send');
+  window.location.href = 'sms:?body=' + encodeURIComponent(text);
+}
+
+function ttsSendEmail() {
+  const text = document.getElementById('ttsText').value;
+  if (!text) return showToast('Nothing to send');
+  window.location.href = 'mailto:?subject=' + encodeURIComponent('Text from GM Toolkit') + '&body=' + encodeURIComponent(text);
 }
 </script>
 </body>

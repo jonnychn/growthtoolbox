@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 :root {
   --bg: #000;
@@ -538,6 +539,48 @@ label {
 }
 
 .utm-summary-card .stat-value { font-size: 20px; }
+
+/* Retention Analyzer */
+.retention-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.retention-chart-wrap canvas { max-width: 100%; }
+
+.retention-summary-wrap .bulk-table { margin-top: 0; }
+
+input[type="file"] {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  border-radius: var(--radius);
+  width: 100%;
+  cursor: pointer;
+}
+
+input[type="file"]::file-selector-button {
+  background: var(--accent);
+  color: #000;
+  border: none;
+  padding: 8px 16px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: var(--radius);
+  cursor: pointer;
+  margin-right: 12px;
+}
+
+input[type="file"]::file-selector-button:hover { background: var(--accent-hover); }
+
+@media (max-width: 768px) {
+  .retention-layout { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
@@ -576,6 +619,9 @@ label {
     </button>
     <button class="nav-item" data-tool="utm">
       <span class="nav-icon">~</span><span>UTM Builder</span>
+    </button>
+    <button class="nav-item" data-tool="retention">
+      <span class="nav-icon">R</span><span>Retention</span>
     </button>
   </nav>
 
@@ -935,6 +981,75 @@ label {
           <textarea id="utmParseInput" placeholder="https://example.com/page?utm_source=google&utm_medium=cpc&utm_campaign=spring_sale" style="min-height:80px" oninput="parseUtmUrl()"></textarea>
         </div>
         <div id="utmParseResults"></div>
+      </div>
+    </section>
+
+    <!-- 9. Webinar Retention Analyzer -->
+    <section class="tool-section" id="tool-retention">
+      <div class="tool-header">
+        <h2>Webinar Retention Analyzer</h2>
+        <p>Analyze attendee engagement drop-off over time. Upload a CSV or paste durations to generate retention curves.</p>
+      </div>
+
+      <div class="output-preview" style="margin-bottom:16px;font-size:12px;margin-top:0">
+        <strong style="color:var(--accent)">Privacy:</strong> All data processing happens locally in your browser. No data is sent to any server.
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Upload CSV <span style="color:var(--text-muted)">(with "Time Duration" header)</span></label>
+          <input type="file" id="retentionFileInput" accept=".csv" style="padding:8px">
+        </div>
+        <div class="form-group">
+          <label>Or paste durations <span style="color:var(--text-muted)">(one number per line, in minutes)</span></label>
+          <textarea id="retentionTextarea" style="min-height:120px" placeholder="45&#10;32&#10;60&#10;15&#10;55&#10;28&#10;42"></textarea>
+        </div>
+      </div>
+
+      <div class="btn-group" style="margin-bottom:20px">
+        <button class="btn btn-primary" onclick="processRetention()">Process Data</button>
+        <button class="btn" onclick="loadRetentionSample()">Sample Data</button>
+        <button class="btn" id="retentionDlCsv" onclick="downloadRetentionCsv()" style="display:none">Download CSV</button>
+        <button class="btn" id="retentionDlChart" onclick="downloadRetentionChart()" style="display:none">Download Chart PNG</button>
+        <button class="btn btn-danger" onclick="clearRetention()">Clear</button>
+      </div>
+
+      <div id="retentionResults" style="display:none">
+        <!-- Stats -->
+        <div class="stats-grid" style="margin-bottom:20px">
+          <div class="stat-card"><div class="stat-value" id="retAvgRetention">-</div><div class="stat-label">Avg Retention</div></div>
+          <div class="stat-card"><div class="stat-value" id="retAvgWatch">-</div><div class="stat-label">Avg Watch Time</div></div>
+          <div class="stat-card"><div class="stat-value" id="retHalfRetention">-</div><div class="stat-label">Retention @ Halfway</div></div>
+          <div class="stat-card"><div class="stat-value" id="retEndRetention">-</div><div class="stat-label">Retention @ End</div></div>
+        </div>
+
+        <!-- Chart + Summary side by side -->
+        <div class="retention-layout">
+          <div class="retention-chart-wrap">
+            <label>Retention Curve</label>
+            <div style="background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px">
+              <canvas id="retentionChart"></canvas>
+            </div>
+          </div>
+          <div class="retention-summary-wrap">
+            <label>Key Intervals</label>
+            <table class="bulk-table" id="retentionSummaryTable">
+              <thead><tr><th>Time Interval</th><th>Retention (%)</th></tr></thead>
+              <tbody id="retentionSummaryBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Full data table -->
+        <div style="margin-top:20px">
+          <label>Minute-by-Minute Breakdown</label>
+          <div style="max-height:300px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius)">
+            <table class="bulk-table" id="retentionFullTable">
+              <thead><tr><th>Minute</th><th>Remaining</th><th>Retention (%)</th></tr></thead>
+              <tbody id="retentionFullBody"></tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -1669,6 +1784,198 @@ function parseUtmUrl() {
       '<div class="utm-summary-card"><div class="stat-value" style="color:' + (allRequiredPresent ? 'var(--accent)' : 'var(--danger)') + '">' + utmCount.requiredPresent + '/' + utmCount.required + '</div><div class="stat-label">Required Present</div></div>' +
       '<div class="utm-summary-card"><div class="stat-value" style="color:' + (hasWarnings ? 'var(--warning)' : 'var(--accent)') + '">' + warnings.length + '</div><div class="stat-label">Warnings</div></div>' +
     '</div>';
+}
+
+// ============ 9. WEBINAR RETENTION ANALYZER ============
+let retentionChartInstance = null;
+let retentionCsvData = '';
+
+function loadRetentionSample() {
+  // Generate realistic sample: 50 attendees, webinar ~60 min
+  // Some leave early, most drop off gradually, a few stay till end
+  const sample = [];
+  for (let i = 0; i < 50; i++) {
+    const r = Math.random();
+    let dur;
+    if (r < 0.08) dur = Math.floor(Math.random() * 5) + 1;       // 8% leave in first 5 min
+    else if (r < 0.20) dur = Math.floor(Math.random() * 10) + 5;  // 12% leave 5-15 min
+    else if (r < 0.40) dur = Math.floor(Math.random() * 15) + 15; // 20% leave 15-30 min
+    else if (r < 0.65) dur = Math.floor(Math.random() * 15) + 30; // 25% leave 30-45 min
+    else if (r < 0.85) dur = Math.floor(Math.random() * 15) + 45; // 20% leave 45-60 min
+    else dur = 60;                                                  // 15% stay full 60 min
+    sample.push(dur);
+  }
+  document.getElementById('retentionTextarea').value = sample.join('\n');
+  document.getElementById('retentionFileInput').value = '';
+  showToast('Sample data loaded (50 attendees, ~60 min webinar)');
+}
+
+function parseDurations(text) {
+  const lines = text.trim().split('\n');
+  const header = lines[0].split(',').map(h => h.trim().toLowerCase());
+  let durations = [];
+  if (header.includes('time duration')) {
+    const idx = header.indexOf('time duration');
+    lines.slice(1).forEach(line => {
+      const val = parseFloat(line.split(',')[idx]);
+      if (!isNaN(val)) durations.push(val);
+    });
+  } else if (lines.every(l => !isNaN(parseFloat(l.trim())) && l.trim() !== '')) {
+    durations = lines.filter(l => l.trim()).map(l => parseFloat(l.trim()));
+  } else {
+    return null;
+  }
+  return durations;
+}
+
+function processRetention() {
+  const fileInput = document.getElementById('retentionFileInput');
+  const textarea = document.getElementById('retentionTextarea');
+  const file = fileInput.files[0];
+
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = e => runRetention(parseDurations(e.target.result));
+    reader.onerror = () => showToast('Error reading file');
+    reader.readAsText(file);
+  } else {
+    const text = textarea.value.trim();
+    if (!text) return showToast('Upload a CSV or paste duration data first');
+    runRetention(parseDurations(text));
+  }
+}
+
+function runRetention(durations) {
+  if (!durations || !durations.length) {
+    return showToast('Invalid data. Ensure CSV has "Time Duration" header or paste numbers (one per line).');
+  }
+
+  const initial = durations.length;
+  const totalWatch = durations.reduce((sum, d) => sum + d, 0);
+  const maxTime = Math.floor(Math.max(...durations));
+
+  // Build minute-by-minute retention
+  const retention = [];
+  for (let t = 1; t <= maxTime; t++) {
+    const rem = durations.filter(d => d >= t).length;
+    retention.push({ minute: t, remaining: rem, pct: parseFloat((rem / initial * 100).toFixed(2)) });
+  }
+
+  // Summary stats
+  const avgRetention = (totalWatch / (initial * maxTime) * 100).toFixed(1) + '%';
+  const avgWatch = (totalWatch / initial).toFixed(1) + ' min';
+  const halfMinute = Math.floor(maxTime / 2);
+  const halfRec = retention.find(r => r.minute === halfMinute);
+  const halfPct = halfRec ? halfRec.pct.toFixed(1) + '%' : 'N/A';
+  const endPct = retention[retention.length - 1].pct.toFixed(1) + '%';
+
+  document.getElementById('retAvgRetention').textContent = avgRetention;
+  document.getElementById('retAvgWatch').textContent = avgWatch;
+  document.getElementById('retHalfRetention').textContent = halfPct;
+  document.getElementById('retEndRetention').textContent = endPct;
+
+  // Chart
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const ctx = document.getElementById('retentionChart').getContext('2d');
+  if (retentionChartInstance) retentionChartInstance.destroy();
+
+  retentionChartInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: retention.map(r => r.minute),
+      datasets: [{
+        label: 'Retention (%)',
+        data: retention.map(r => r.pct),
+        fill: true,
+        borderColor: '#22c55e',
+        backgroundColor: 'rgba(34, 197, 94, 0.1)',
+        borderWidth: 2,
+        pointRadius: maxTime > 30 ? 0 : 3,
+        pointBackgroundColor: '#22c55e',
+        tension: 0.2
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { labels: { color: isDark ? '#fff' : '#000', font: { family: "'JetBrains Mono', monospace", size: 11 } } }
+      },
+      scales: {
+        x: {
+          title: { display: true, text: 'Time (min)', color: isDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)', font: { family: "'JetBrains Mono', monospace" } },
+          ticks: { color: isDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)', font: { family: "'JetBrains Mono', monospace", size: 10 } },
+          grid: { color: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)' }
+        },
+        y: {
+          beginAtZero: true, max: 100,
+          title: { display: true, text: 'Retention (%)', color: isDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)', font: { family: "'JetBrains Mono', monospace" } },
+          ticks: { color: isDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)', font: { family: "'JetBrains Mono', monospace", size: 10 } },
+          grid: { color: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)' }
+        }
+      }
+    }
+  });
+
+  // Summary table (key intervals)
+  const intervals = [15, 30, 45, 60].filter(i => i <= maxTime);
+  if (!intervals.includes(maxTime)) intervals.push(maxTime);
+  const summaryBody = document.getElementById('retentionSummaryBody');
+  summaryBody.innerHTML = intervals.map(i => {
+    const rec = retention.find(r => r.minute === i);
+    const pctVal = rec ? rec.pct.toFixed(1) + '%' : '0%';
+    const lbl = i === maxTime ? 'End (' + i + ' min)' : i + ' min';
+    return '<tr><td>' + lbl + '</td><td>' + pctVal + '</td></tr>';
+  }).join('');
+
+  // Full table
+  const fullBody = document.getElementById('retentionFullBody');
+  fullBody.innerHTML = retention.map(r =>
+    '<tr><td>' + r.minute + '</td><td>' + r.remaining + '</td><td>' + r.pct.toFixed(2) + '%</td></tr>'
+  ).join('');
+
+  // CSV data for export
+  retentionCsvData = 'Time Spent (Minutes),Number Remaining,Retention (%)\n' +
+    retention.map(r => r.minute + ',' + r.remaining + ',' + r.pct.toFixed(2) + '%').join('\n');
+
+  // Show results and export buttons
+  document.getElementById('retentionResults').style.display = 'block';
+  document.getElementById('retentionDlCsv').style.display = 'inline-flex';
+  document.getElementById('retentionDlChart').style.display = 'inline-flex';
+  showToast('Processed ' + initial + ' attendees over ' + maxTime + ' minutes');
+}
+
+function downloadRetentionCsv() {
+  if (!retentionCsvData) return showToast('Process data first');
+  downloadFile(retentionCsvData, 'retention_data.csv', 'text/csv');
+  showToast('CSV downloaded!');
+}
+
+function downloadRetentionChart() {
+  const canvas = document.getElementById('retentionChart');
+  if (!canvas) return showToast('No chart to export');
+  const temp = document.createElement('canvas');
+  temp.width = canvas.width;
+  temp.height = canvas.height;
+  const tx = temp.getContext('2d');
+  tx.fillStyle = '#fff';
+  tx.fillRect(0, 0, temp.width, temp.height);
+  tx.drawImage(canvas, 0, 0);
+  const a = document.createElement('a');
+  a.href = temp.toDataURL('image/png');
+  a.download = 'retention_chart.png';
+  a.click();
+  showToast('Chart PNG downloaded!');
+}
+
+function clearRetention() {
+  document.getElementById('retentionTextarea').value = '';
+  document.getElementById('retentionFileInput').value = '';
+  document.getElementById('retentionResults').style.display = 'none';
+  document.getElementById('retentionDlCsv').style.display = 'none';
+  document.getElementById('retentionDlChart').style.display = 'none';
+  if (retentionChartInstance) { retentionChartInstance.destroy(); retentionChartInstance = null; }
+  retentionCsvData = '';
+  showToast('Cleared');
 }
 </script>
 </body>

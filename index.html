@@ -581,6 +581,180 @@ input[type="file"]::file-selector-button:hover { background: var(--accent-hover)
 @media (max-width: 768px) {
   .retention-layout { grid-template-columns: 1fr; }
 }
+
+/* Spinner Wheel */
+.spinner-area {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  margin-top: 16px;
+}
+
+.spinner-container {
+  position: relative;
+  width: 400px;
+  height: 400px;
+  flex-shrink: 0;
+}
+
+.spinner-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: transform 5s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.spinner-wrapper canvas { width: 100%; height: 100%; }
+
+.spinner-pointer {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 28px;
+  pointer-events: none;
+  z-index: 5;
+  filter: drop-shadow(0 2px 2px rgba(0,0,0,.3));
+}
+
+.spinner-sidebar { flex: 1; min-width: 200px; }
+
+.spinner-result {
+  text-align: center;
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent);
+  min-height: 28px;
+  margin-top: 12px;
+}
+
+@media (max-width: 768px) {
+  .spinner-area { flex-direction: column; align-items: center; }
+  .spinner-container { width: 300px; height: 300px; }
+}
+
+/* Name Draw Grid */
+.draw-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.draw-grid-item {
+  padding: 10px 8px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  text-align: center;
+  font-size: 12px;
+  font-family: var(--font-mono);
+  transition: all 0.2s;
+  word-break: break-word;
+}
+
+.draw-grid-item.highlight {
+  background: var(--accent);
+  color: #000;
+  border-color: var(--accent);
+  font-weight: 700;
+  transform: scale(1.05);
+  box-shadow: 0 0 12px rgba(34, 197, 94, 0.4);
+}
+
+.draw-winner-banner {
+  text-align: center;
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--accent);
+  min-height: 32px;
+  margin: 16px 0;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--accent-muted);
+}
+
+/* Business Days Calculator */
+input[type="date"] {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-surface);
+  color: var(--text);
+  width: 100%;
+}
+input[type="date"]:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+}
+[data-theme="light"] input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: none;
+}
+.bizdays-duration {
+  background: var(--accent-muted);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 16px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+.bizdays-holiday-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+.bizdays-holiday-pill {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.bizdays-ref-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  font-size: 13px;
+}
+.bizdays-ref-table th,
+.bizdays-ref-table td {
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  text-align: left;
+}
+.bizdays-ref-table th {
+  background: var(--bg-elevated);
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+.bizdays-ref-table tr:hover td {
+  background: var(--accent-muted);
+}
+#bizdays-results { display: none; }
+.bizdays-manual-row { display: flex; gap: 12px; align-items: flex-end; }
+.bizdays-manual-row .form-group { flex: 1; }
+@media (max-width: 768px) {
+  .bizdays-manual-row { flex-direction: column; }
+}
 </style>
 </head>
 <body>
@@ -625,6 +799,15 @@ input[type="file"]::file-selector-button:hover { background: var(--accent-hover)
     </button>
     <button class="nav-item" data-tool="tts">
       <span class="nav-icon">S</span><span>Text to Speech</span>
+    </button>
+    <button class="nav-item" data-tool="spinner">
+      <span class="nav-icon">O</span><span>Spin Wheel</span>
+    </button>
+    <button class="nav-item" data-tool="namedraw">
+      <span class="nav-icon">?</span><span>Name Draw</span>
+    </button>
+    <button class="nav-item" data-tool="bizdays">
+      <span class="nav-icon">B</span><span>Date Calculator</span>
     </button>
   </nav>
 
@@ -1106,12 +1289,176 @@ input[type="file"]::file-selector-button:hover { background: var(--accent-hover)
 
       <!-- Share controls -->
       <div class="btn-group" style="margin-bottom:12px">
+        <button class="btn" onclick="ttsLoadSample()">Sample Text</button>
         <button class="btn" onclick="ttsCopy()">Copy Text</button>
         <button class="btn" onclick="ttsSendSms()">SMS</button>
         <button class="btn" onclick="ttsSendEmail()">Email</button>
       </div>
 
       <div id="ttsStatus" style="font-size:12px;color:var(--text-muted);min-height:20px"></div>
+    </section>
+
+    <!-- 11. Spin the Wheel -->
+    <section class="tool-section" id="tool-spinner">
+      <div class="tool-header">
+        <h2>Spin the Wheel</h2>
+        <p>Random name picker for contests, giveaways, team selection, or any decision that needs a spin.</p>
+      </div>
+
+      <div class="form-group">
+        <label>Names <span style="color:var(--text-muted)">(one per line)</span></label>
+        <textarea id="spinnerNames" style="min-height:120px" placeholder="Alice Johnson&#10;Bob Smith&#10;Carol White&#10;Dave Lee&#10;Eve Martinez&#10;Frank Chen"></textarea>
+      </div>
+
+      <div class="btn-group" style="margin-bottom:16px">
+        <button class="btn btn-primary" onclick="spinnerLoad()">Add to Wheel</button>
+        <button class="btn btn-primary" id="spinnerSpinBtn" onclick="spinnerSpin()" disabled>Spin</button>
+        <button class="btn" onclick="spinnerLoadDemo()">Demo</button>
+        <button class="btn" onclick="spinnerTogglePrivacy()">Toggle Privacy</button>
+        <button class="btn btn-danger" onclick="spinnerClear()">Clear</button>
+      </div>
+
+      <div class="spinner-result" id="spinnerResult"></div>
+
+      <div class="spinner-area">
+        <div class="spinner-container">
+          <div class="spinner-wrapper" id="spinnerWrapper">
+            <canvas id="spinnerCanvas" width="400" height="400"></canvas>
+          </div>
+          <div class="spinner-pointer">&#9660;</div>
+        </div>
+        <div class="spinner-sidebar">
+          <div class="output-preview" style="font-size:12px;margin-top:0">
+            <strong style="color:var(--accent)">How to use:</strong>
+            <ol style="margin:8px 0 0 16px;padding:0;line-height:1.8">
+              <li>Enter names (one per line) and click <strong>Add to Wheel</strong></li>
+              <li>Click <strong>Spin</strong> to pick a random winner</li>
+              <li><strong>Toggle Privacy</strong> shows "First L." format</li>
+              <li>Optimal max: <strong>~70 names</strong> (80+ may overlap)</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 12. Name Draw -->
+    <section class="tool-section" id="tool-namedraw">
+      <div class="tool-header">
+        <h2>Webinar Name Draw</h2>
+        <p>Animated grid-based name picker with sound effects. Great for live webinar giveaways, raffles, and audience engagement.</p>
+      </div>
+
+      <div class="form-group">
+        <label>Names <span style="color:var(--text-muted)">(one per line, max 300)</span></label>
+        <textarea id="drawNamesInput" style="min-height:120px" placeholder="Aarav Miller&#10;Aiko Moore&#10;Akira Jones&#10;Alexander Williams&#10;Amelia Lopez"></textarea>
+      </div>
+
+      <div class="form-row" style="align-items:end">
+        <div class="form-group" style="margin-bottom:0">
+          <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;text-transform:none;letter-spacing:normal;font-size:13px">
+            <input type="checkbox" id="drawPrivacyToggle" style="width:auto" onchange="drawRenderGrid()"> Hide last names (show "First L." only)
+          </label>
+        </div>
+      </div>
+
+      <div class="btn-group" style="margin:16px 0">
+        <button class="btn btn-primary" onclick="drawStart()" id="drawGoBtn">Hit Go!</button>
+        <button class="btn" onclick="drawLoadDemo()">Demo (120 names)</button>
+        <button class="btn btn-danger" onclick="drawClear()">Clear</button>
+      </div>
+
+      <div class="draw-winner-banner" id="drawWinnerBanner" style="display:none"></div>
+
+      <div class="draw-grid" id="drawGrid"></div>
+
+      <div class="output-preview" style="margin-top:16px;font-size:12px">
+        <strong style="color:var(--accent)">How it works:</strong> Names appear in a grid. Click <strong>Hit Go!</strong> and names highlight randomly with sound, slowing down until a winner is selected. Toggle privacy to anonymize last names during live events.
+      </div>
+    </section>
+
+    <!-- 13. Business Days Calculator -->
+    <section class="tool-section" id="tool-bizdays">
+      <div class="tool-header">
+        <h2>Date Calculator</h2>
+        <p>Calculate working days between two dates, excluding weekends and US federal holidays.</p>
+      </div>
+
+      <div class="toggle-group" style="margin-bottom:16px">
+        <button class="toggle-btn active" onclick="bizdaysSetMode('picker')">Date Picker</button>
+        <button class="toggle-btn" onclick="bizdaysSetMode('manual')">Manual Entry</button>
+      </div>
+
+      <div id="bizdays-picker-panel">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Start Date</label>
+            <input type="date" id="bizdaysStartDate">
+          </div>
+          <div class="form-group">
+            <label>End Date</label>
+            <input type="date" id="bizdaysEndDate">
+          </div>
+        </div>
+      </div>
+
+      <div id="bizdays-manual-panel" style="display:none">
+        <div class="bizdays-manual-row">
+          <div class="form-group">
+            <label>Start Date (MM/DD/YYYY)</label>
+            <input type="text" id="bizdaysStartManual" placeholder="01/15/2025" maxlength="10">
+          </div>
+          <div class="form-group">
+            <label>End Date (MM/DD/YYYY)</label>
+            <input type="text" id="bizdaysEndManual" placeholder="06/30/2025" maxlength="10">
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-group" style="margin-top:12px">
+        <button class="btn btn-primary" onclick="bizdaysCalc()">Calculate</button>
+        <button class="btn" onclick="bizdaysSetToday()">Set Start to Today</button>
+        <button class="btn btn-danger" onclick="bizdaysClear()">Clear</button>
+      </div>
+
+      <div id="bizdays-results">
+        <div class="bizdays-duration" id="bizdays-duration-banner"></div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Business Days</div>
+            <div class="stat-value" id="bizdays-biz-count">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Calendar Days</div>
+            <div class="stat-value" id="bizdays-cal-count">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Weekends Skipped</div>
+            <div class="stat-value" id="bizdays-weekends">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Holidays Skipped</div>
+            <div class="stat-value" id="bizdays-holidays">—</div>
+          </div>
+        </div>
+
+        <div id="bizdays-holiday-detail" style="margin-top:16px">
+          <h3 style="font-size:14px;margin-bottom:8px">Skipped Holidays</h3>
+          <div class="bizdays-holiday-list" id="bizdays-holiday-pills"></div>
+        </div>
+
+        <div id="bizdays-ref-section" style="margin-top:24px">
+          <h3 style="font-size:14px;margin-bottom:8px">US Federal Holidays Reference</h3>
+          <table class="bizdays-ref-table">
+            <thead><tr><th>Holiday</th><th>Date</th><th>Observed</th></tr></thead>
+            <tbody id="bizdays-ref-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="output-preview" style="margin-top:16px;font-size:12px">
+        <strong style="color:var(--accent)">How it works:</strong> Business days exclude Saturdays, Sundays, and 11 US federal holidays. If a holiday falls on Saturday it is observed on Friday; if on Sunday, on Monday. Start date is inclusive, end date is exclusive.
+      </div>
     </section>
 
   </main>
@@ -2130,6 +2477,12 @@ function ttsStop() {
   }
 }
 
+function ttsLoadSample() {
+  document.getElementById('ttsText').value = "Mary had a little lamb,\nIts fleece was white as snow;\nAnd everywhere that Mary went,\nThe lamb was sure to go.\n\nIt followed her to school one day,\nWhich was against the rule;\nIt made the children laugh and play\nTo see a lamb at school.\n\nAnd so the teacher turned it out,\nBut still it lingered near,\nAnd patiently waited about\nTill Mary did appear.\n\n\"Why does the lamb love Mary so?\"\nThe eager children cry;\n\"Why, Mary loves the lamb, you know,\"\nThe teacher did reply.";
+  updateTtsInfo();
+  showToast('Sample text loaded');
+}
+
 function ttsCopy() {
   const text = document.getElementById('ttsText').value;
   if (!text) return showToast('Nothing to copy');
@@ -2148,6 +2501,472 @@ function ttsSendEmail() {
   if (!text) return showToast('Nothing to send');
   window.location.href = 'mailto:?subject=' + encodeURIComponent('Text from GM Toolkit') + '&body=' + encodeURIComponent(text);
 }
+
+// ============ 11. SPIN THE WHEEL ============
+let spinnerSegments = [];
+let spinnerRawNames = [];
+let spinnerPrivacy = false;
+const spinnerCtx = document.getElementById('spinnerCanvas').getContext('2d');
+const spinnerWrapper = document.getElementById('spinnerWrapper');
+
+function spinnerAbbreviate(name) {
+  const parts = name.trim().split(/\s+/);
+  return parts.length > 1 ? parts[0] + ' ' + parts[parts.length - 1][0] + '.' : parts[0];
+}
+
+function spinnerDrawWheel() {
+  const canvas = spinnerCtx.canvas;
+  spinnerCtx.clearRect(0, 0, canvas.width, canvas.height);
+  const n = spinnerSegments.length;
+  if (!n) return;
+  const radius = canvas.width / 2;
+  const angle = 2 * Math.PI / n;
+  const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#000';
+
+  // Dynamic font sizing
+  let fontSize = 14;
+  if (n > 30) fontSize = 11;
+  if (n > 50) fontSize = 9;
+  if (n > 70) fontSize = 7;
+
+  spinnerSegments.forEach((seg, i) => {
+    const start = i * angle;
+    const end = start + angle;
+
+    // Draw segment
+    spinnerCtx.beginPath();
+    spinnerCtx.moveTo(radius, radius);
+    spinnerCtx.arc(radius, radius, radius, start, end);
+    spinnerCtx.closePath();
+    spinnerCtx.fillStyle = 'hsl(' + (i * 360 / n) + ', 60%, 55%)';
+    spinnerCtx.fill();
+    spinnerCtx.strokeStyle = 'rgba(0,0,0,0.15)';
+    spinnerCtx.lineWidth = 1;
+    spinnerCtx.stroke();
+
+    // Draw text
+    spinnerCtx.save();
+    spinnerCtx.translate(radius, radius);
+    spinnerCtx.rotate(start + angle / 2);
+    spinnerCtx.fillStyle = '#000';
+    spinnerCtx.font = 'bold ' + fontSize + 'px "JetBrains Mono", monospace';
+    spinnerCtx.textAlign = 'right';
+    spinnerCtx.textBaseline = 'middle';
+    spinnerCtx.fillText(seg, radius - 12, 0);
+    spinnerCtx.restore();
+  });
+
+  // Center circle
+  spinnerCtx.beginPath();
+  spinnerCtx.arc(radius, radius, 18, 0, 2 * Math.PI);
+  spinnerCtx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#000';
+  spinnerCtx.fill();
+  spinnerCtx.strokeStyle = 'rgba(255,255,255,0.3)';
+  spinnerCtx.lineWidth = 2;
+  spinnerCtx.stroke();
+}
+
+function spinnerLoad() {
+  const raw = document.getElementById('spinnerNames').value.trim().split('\n').filter(n => n.trim());
+  if (raw.length < 2) return showToast('Enter at least 2 names');
+  spinnerRawNames = raw.map(n => n.trim());
+  spinnerSegments = spinnerPrivacy ? spinnerRawNames.map(spinnerAbbreviate) : [...spinnerRawNames];
+  spinnerWrapper.style.transition = 'none';
+  spinnerWrapper.style.transform = 'rotate(0deg)';
+  // Force reflow so the reset takes effect before re-enabling transition
+  spinnerWrapper.offsetHeight;
+  spinnerWrapper.style.transition = 'transform 5s cubic-bezier(0.33, 1, 0.68, 1)';
+  spinnerDrawWheel();
+  document.getElementById('spinnerSpinBtn').disabled = false;
+  document.getElementById('spinnerResult').textContent = '';
+  showToast(spinnerSegments.length + ' names loaded');
+}
+
+function spinnerSpin() {
+  const btn = document.getElementById('spinnerSpinBtn');
+  if (!spinnerSegments.length) return showToast('Add names first');
+  btn.disabled = true;
+  document.getElementById('spinnerResult').textContent = '';
+
+  const n = spinnerSegments.length;
+  const target = Math.floor(Math.random() * n);
+  const spinsCount = 3 + Math.random() * 3;
+  const degPer = 360 / n;
+  const mid = target * degPer + degPer / 2;
+  const pointerAt = 270; // pointer is at top (12 o'clock = 270 deg in canvas coords)
+  const finalDeg = spinsCount * 360 + (pointerAt - mid);
+
+  spinnerWrapper.style.transform = 'rotate(' + finalDeg + 'deg)';
+
+  spinnerWrapper.addEventListener('transitionend', function handler() {
+    spinnerWrapper.removeEventListener('transitionend', handler);
+    btn.disabled = false;
+    // Show winner
+    const winner = spinnerRawNames[target];
+    const display = spinnerPrivacy ? spinnerAbbreviate(winner) : winner;
+    document.getElementById('spinnerResult').textContent = '🎉 ' + display;
+    showToast('Winner: ' + display);
+  });
+}
+
+function spinnerTogglePrivacy() {
+  spinnerPrivacy = !spinnerPrivacy;
+  if (spinnerRawNames.length) {
+    spinnerSegments = spinnerPrivacy ? spinnerRawNames.map(spinnerAbbreviate) : [...spinnerRawNames];
+    spinnerDrawWheel();
+  }
+  showToast('Privacy ' + (spinnerPrivacy ? 'on' : 'off'));
+}
+
+function spinnerLoadDemo() {
+  const names = ['Alice Johnson', 'Bob Smith', 'Carol White', 'Dave Lee', 'Eve Martinez', 'Frank Chen', 'Grace Kim', 'Henry Park', 'Isla Patel', 'Jack Thompson', 'Kelly Nguyen', 'Leo Garcia'];
+  document.getElementById('spinnerNames').value = names.join('\n');
+  spinnerLoad();
+}
+
+function spinnerClear() {
+  spinnerSegments = [];
+  spinnerRawNames = [];
+  spinnerPrivacy = false;
+  spinnerCtx.clearRect(0, 0, spinnerCtx.canvas.width, spinnerCtx.canvas.height);
+  spinnerWrapper.style.transition = 'none';
+  spinnerWrapper.style.transform = 'rotate(0deg)';
+  spinnerWrapper.offsetHeight;
+  spinnerWrapper.style.transition = 'transform 5s cubic-bezier(0.33, 1, 0.68, 1)';
+  document.getElementById('spinnerSpinBtn').disabled = true;
+  document.getElementById('spinnerResult').textContent = '';
+  document.getElementById('spinnerNames').value = '';
+  showToast('Cleared');
+}
+
+// ============ 12. NAME DRAW ============
+const drawDemoNames = 'Aarav Miller\nAiko Moore\nAkira Jones\nAlexander Williams\nAmelia Lopez\nAnjali Hernandez\nAnya Smith\nAva Jackson\nBao Martin\nBenjamin Johnson\nBianca Garcia\nBinh Garcia\nBo Thomas\nBoris Wilson\nCarlos Lopez\nCeleste Martin\nCharlotte Wilson\nChen Gonzalez\nChloe Hernandez\nChul Lopez\nDara Jackson\nDarius Hernandez\nDeepa Moore\nDmitri Anderson\nDuyen Hernandez\nEhsan Martinez\nEiko Lopez\nElena Martinez\nElijah Rodriguez\nEmma Martinez\nEmre Gonzalez\nEun Thomas\nEvelyn Hernandez\nFahim Martin\nFarah Wilson\nFarid Johnson\nFatima Hernandez\nFlorence Taylor\nGianni Anderson\nGita Wilson\nGregor Lopez\nGuan Hernandez\nGustav Jackson\nHana Smith\nHarper Smith\nHaruto Thomas\nHazel Martinez\nHelena Martin\nHenry Smith\nHiro Williams\nIbrahim Jackson\nIlana Smith\nIndira Gonzalez\nIsabella Garcia\nIsha Jones\nIvan Garcia\nJames Brown\nJasmine Thomas\nJin Jackson\nJiro Wilson\nJoon Brown\nJorge Johnson\nKaori Gonzalez\nKatia Martinez\nKeiko Brown\nKiran Rodriguez\nKota Smith\nLan Garcia\nLeila Davis\nLiam Wilson\nLing Brown\nLior Taylor\nLucas Taylor\nLuka Williams\nMarina Brown\nMateo Gonzalez\nMei Martinez\nMia Taylor\nMin Williams\nMina Anderson\nNaoki Brown\nNaomi Gonzalez\nNikhil Moore\nNiko Garcia\nNoah Rodriguez\nNora Jones\nOksana Hernandez\nOliver Rodriguez\nOlivia Rodriguez\nOmar Miller\nOri Smith\nOrion Wilson\nOsamu Martin\nPaulo Rodriguez\nPavel Williams\nPetra Williams\nPing Jackson\nPriya Davis\nQamar Smith\nQi Williams\nQiang Hernandez\nQiuyue Anderson\nQuyen Anderson\nRaj Lopez\nRavi Davis\nRaviya Moore\nReza Martin\nRosa Davis\nSakura Jackson\nSami Martinez\nSang Davis\nSergio Brown\nSofia Rodriguez\nSophia Jackson\nTakumi Martinez\nTala Jones\nTariq Anderson\nTenzin Anderson\nTing Martin\nUjin Gonzalez\nUlrik Thomas\nUma Brown';
+
+function drawRenderGrid() {
+  const raw = document.getElementById('drawNamesInput').value.trim().split('\n').filter(n => n.trim()).slice(0, 300);
+  const grid = document.getElementById('drawGrid');
+  const privacy = document.getElementById('drawPrivacyToggle').checked;
+  grid.innerHTML = '';
+
+  raw.forEach(fullName => {
+    const parts = fullName.trim().split(/\s+/);
+    let display;
+    if (privacy && parts.length > 1) {
+      display = parts[0] + ' ' + parts[parts.length - 1].charAt(0) + '.';
+    } else {
+      display = fullName.trim();
+    }
+    const item = document.createElement('div');
+    item.className = 'draw-grid-item';
+    item.textContent = display;
+    grid.appendChild(item);
+  });
+}
+
+// Auto-render grid when typing
+document.getElementById('drawNamesInput').addEventListener('input', drawRenderGrid);
+
+function drawPlayBeep() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(600, ctx.currentTime);
+    osc.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.05);
+  } catch(e) {}
+}
+
+function drawPlayHappy() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const notes = [523.25, 659.25, 783.99];
+    notes.forEach((freq, idx) => {
+      const osc = ctx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.15);
+      osc.connect(ctx.destination);
+      osc.start(ctx.currentTime + idx * 0.15);
+      osc.stop(ctx.currentTime + idx * 0.15 + 0.1);
+    });
+  } catch(e) {}
+}
+
+function drawStart() {
+  const items = Array.from(document.querySelectorAll('#drawGrid .draw-grid-item'));
+  if (!items.length) {
+    // Auto-render from textarea first
+    drawRenderGrid();
+    const newItems = Array.from(document.querySelectorAll('#drawGrid .draw-grid-item'));
+    if (!newItems.length) return showToast('Enter names first');
+    drawAnimate(newItems);
+  } else {
+    drawAnimate(items);
+  }
+}
+
+function drawAnimate(items) {
+  const btn = document.getElementById('drawGoBtn');
+  btn.disabled = true;
+  document.getElementById('drawWinnerBanner').style.display = 'none';
+
+  let cycles = 0;
+  let interval = 100;
+  const maxCycles = 30;
+  const total = items.length;
+
+  function tick() {
+    const rnd = Math.floor(Math.random() * total);
+    // Clear previous
+    items.forEach(i => i.classList.remove('highlight'));
+    items[rnd].classList.add('highlight');
+    items[rnd].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    cycles++;
+
+    if (cycles < maxCycles) {
+      drawPlayBeep();
+      interval += 15;
+      setTimeout(tick, interval);
+    } else {
+      drawPlayHappy();
+      btn.disabled = false;
+      // Show winner banner
+      const winner = items[rnd].textContent;
+      const banner = document.getElementById('drawWinnerBanner');
+      banner.textContent = '🎉 Winner: ' + winner;
+      banner.style.display = 'block';
+      showToast('Winner: ' + winner);
+    }
+  }
+  tick();
+}
+
+function drawLoadDemo() {
+  document.getElementById('drawNamesInput').value = drawDemoNames;
+  drawRenderGrid();
+  showToast('120 demo names loaded');
+}
+
+function drawClear() {
+  document.getElementById('drawNamesInput').value = '';
+  document.getElementById('drawGrid').innerHTML = '';
+  document.getElementById('drawWinnerBanner').style.display = 'none';
+  document.getElementById('drawPrivacyToggle').checked = false;
+  showToast('Cleared');
+}
+
+// ============ BUSINESS DAYS CALCULATOR ============
+
+function bizdaysNthWeekday(year, month, weekday, n) {
+  // Get nth occurrence of weekday (0=Sun..6=Sat) in given month
+  const first = new Date(year, month, 1);
+  let day = 1 + ((weekday - first.getDay() + 7) % 7);
+  day += (n - 1) * 7;
+  return new Date(year, month, day);
+}
+
+function bizdaysLastWeekday(year, month, weekday) {
+  // Get last occurrence of weekday in given month
+  const last = new Date(year, month + 1, 0); // last day of month
+  const diff = (last.getDay() - weekday + 7) % 7;
+  return new Date(year, month, last.getDate() - diff);
+}
+
+function bizdaysGetHolidays(year) {
+  const holidays = [
+    { name: "New Year's Day", date: new Date(year, 0, 1) },
+    { name: "MLK Day", date: bizdaysNthWeekday(year, 0, 1, 3) },
+    { name: "Presidents' Day", date: bizdaysNthWeekday(year, 1, 1, 3) },
+    { name: "Memorial Day", date: bizdaysLastWeekday(year, 4, 1) },
+    { name: "Juneteenth", date: new Date(year, 5, 19) },
+    { name: "Independence Day", date: new Date(year, 6, 4) },
+    { name: "Labor Day", date: bizdaysNthWeekday(year, 8, 1, 1) },
+    { name: "Columbus Day", date: bizdaysNthWeekday(year, 9, 1, 2) },
+    { name: "Veterans Day", date: new Date(year, 10, 11) },
+    { name: "Thanksgiving", date: bizdaysNthWeekday(year, 10, 4, 4) },
+    { name: "Christmas Day", date: new Date(year, 11, 25) }
+  ];
+
+  // Apply weekend observance: Sat → Fri, Sun → Mon
+  return holidays.map(h => {
+    const d = new Date(h.date);
+    const dow = d.getDay();
+    let observed = new Date(d);
+    if (dow === 6) observed.setDate(d.getDate() - 1); // Sat → Fri
+    if (dow === 0) observed.setDate(d.getDate() + 1); // Sun → Mon
+    return { name: h.name, actual: d, observed };
+  });
+}
+
+function bizdaysDateKey(d) {
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+
+function bizdaysFormatDuration(totalDays) {
+  if (totalDays === 0) return '0 days';
+  const parts = [];
+  const years = Math.floor(totalDays / 365);
+  let rem = totalDays % 365;
+  const months = Math.floor(rem / 30);
+  rem = rem % 30;
+  const weeks = Math.floor(rem / 7);
+  const days = rem % 7;
+  if (years) parts.push(years + (years === 1 ? ' year' : ' years'));
+  if (months) parts.push(months + (months === 1 ? ' month' : ' months'));
+  if (weeks) parts.push(weeks + (weeks === 1 ? ' week' : ' weeks'));
+  if (days) parts.push(days + (days === 1 ? ' day' : ' days'));
+  return parts.join(', ');
+}
+
+function bizdaysSetMode(mode) {
+  const btns = document.querySelectorAll('#tool-bizdays .toggle-btn');
+  btns.forEach(b => b.classList.remove('active'));
+  if (mode === 'picker') {
+    btns[0].classList.add('active');
+    document.getElementById('bizdays-picker-panel').style.display = '';
+    document.getElementById('bizdays-manual-panel').style.display = 'none';
+  } else {
+    btns[1].classList.add('active');
+    document.getElementById('bizdays-picker-panel').style.display = 'none';
+    document.getElementById('bizdays-manual-panel').style.display = '';
+  }
+}
+
+function bizdaysSetToday() {
+  const today = new Date();
+  const iso = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+  const us = String(today.getMonth() + 1).padStart(2, '0') + '/' + String(today.getDate()).padStart(2, '0') + '/' + today.getFullYear();
+  document.getElementById('bizdaysStartDate').value = iso;
+  document.getElementById('bizdaysStartManual').value = us;
+  showToast('Start date set to today');
+}
+
+function bizdaysClear() {
+  document.getElementById('bizdaysStartDate').value = '';
+  document.getElementById('bizdaysEndDate').value = '';
+  document.getElementById('bizdaysStartManual').value = '';
+  document.getElementById('bizdaysEndManual').value = '';
+  document.getElementById('bizdays-results').style.display = 'none';
+  showToast('Cleared');
+}
+
+function bizdaysParseManual(val) {
+  const m = val.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (!m) return null;
+  const d = new Date(parseInt(m[3]), parseInt(m[1]) - 1, parseInt(m[2]));
+  if (isNaN(d.getTime())) return null;
+  return d;
+}
+
+function bizdaysCalc() {
+  try {
+    const pickerPanel = document.getElementById('bizdays-picker-panel');
+    const pickerMode = pickerPanel.style.display !== 'none';
+    let start, end;
+
+    if (pickerMode) {
+      const sv = document.getElementById('bizdaysStartDate').value;
+      const ev = document.getElementById('bizdaysEndDate').value;
+      if (!sv || !ev) { showToast('Please select both start and end dates'); return; }
+      const sp = sv.split('-');
+      start = new Date(parseInt(sp[0]), parseInt(sp[1]) - 1, parseInt(sp[2]));
+      const ep = ev.split('-');
+      end = new Date(parseInt(ep[0]), parseInt(ep[1]) - 1, parseInt(ep[2]));
+    } else {
+      start = bizdaysParseManual(document.getElementById('bizdaysStartManual').value);
+      end = bizdaysParseManual(document.getElementById('bizdaysEndManual').value);
+      if (!start || !end) { showToast('Please enter valid dates (MM/DD/YYYY)'); return; }
+    }
+
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) { showToast('Invalid date values'); return; }
+    if (start >= end) { showToast('End date must be after start date'); return; }
+
+    // Collect holidays for all relevant years
+    const startYear = start.getFullYear();
+    const endYear = end.getFullYear();
+    const allHolidays = [];
+    for (let y = startYear; y <= endYear; y++) {
+      allHolidays.push(...bizdaysGetHolidays(y));
+    }
+
+    // Build set of observed holiday date keys
+    const holidayMap = {};
+    allHolidays.forEach(h => { holidayMap[bizdaysDateKey(h.observed)] = h.name; });
+
+    let bizDays = 0, weekendDays = 0, holidayDays = 0;
+    const skippedHolidays = [];
+    const calendarDays = Math.round((end - start) / (1000 * 60 * 60 * 24));
+
+    const cur = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+    while (cur < end) {
+      const dow = cur.getDay();
+      const key = bizdaysDateKey(cur);
+      if (dow === 0 || dow === 6) {
+        weekendDays++;
+      } else if (holidayMap[key]) {
+        holidayDays++;
+        skippedHolidays.push({ name: holidayMap[key], date: new Date(cur) });
+      } else {
+        bizDays++;
+      }
+      cur.setDate(cur.getDate() + 1);
+    }
+
+    // Update results
+    document.getElementById('bizdays-results').style.display = 'block';
+    document.getElementById('bizdays-duration-banner').textContent = bizdaysFormatDuration(bizDays);
+    document.getElementById('bizdays-biz-count').textContent = bizDays;
+    document.getElementById('bizdays-cal-count').textContent = calendarDays;
+    document.getElementById('bizdays-weekends').textContent = weekendDays;
+    document.getElementById('bizdays-holidays').textContent = holidayDays;
+
+    // Skipped holidays pills
+    const pillsEl = document.getElementById('bizdays-holiday-pills');
+    if (skippedHolidays.length === 0) {
+      pillsEl.innerHTML = '<span style="color:var(--text-muted);font-size:12px">No holidays in this range</span>';
+    } else {
+      pillsEl.innerHTML = skippedHolidays.map(h => {
+        const ds = String(h.date.getMonth() + 1) + '/' + String(h.date.getDate()) + '/' + h.date.getFullYear();
+        return '<span class="bizdays-holiday-pill">' + h.name + ' (' + ds + ')</span>';
+      }).join('');
+    }
+
+    // Reference table — show holidays for each year in range
+    const refBody = document.getElementById('bizdays-ref-body');
+    refBody.innerHTML = '';
+    for (let y = startYear; y <= endYear; y++) {
+      const yearHolidays = bizdaysGetHolidays(y);
+      yearHolidays.forEach(h => {
+        const tr = document.createElement('tr');
+        const fmt = d => String(d.getMonth() + 1) + '/' + String(d.getDate()) + '/' + d.getFullYear();
+        const actualStr = fmt(h.actual);
+        const observedStr = fmt(h.observed);
+        const obsLabel = actualStr === observedStr ? 'Same' : observedStr;
+        [h.name + (endYear > startYear ? ' (' + y + ')' : ''), actualStr, obsLabel].forEach(val => {
+          const td = document.createElement('td');
+          td.textContent = val;
+          tr.appendChild(td);
+        });
+        refBody.appendChild(tr);
+      });
+    }
+
+    showToast('Calculated: ' + bizDays + ' business days');
+  } catch(e) {
+    showToast('Error: ' + e.message);
+    console.error('bizdaysCalc error:', e);
+  }
+}
+
+// Initialize start date to today
+(function() {
+  const today = new Date();
+  const iso = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+  const us = String(today.getMonth() + 1).padStart(2, '0') + '/' + String(today.getDate()).padStart(2, '0') + '/' + today.getFullYear();
+  document.getElementById('bizdaysStartDate').value = iso;
+  document.getElementById('bizdaysStartManual').value = us;
+})();
 </script>
 </body>
 </html>

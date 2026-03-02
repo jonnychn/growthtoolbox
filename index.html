@@ -1,767 +1,21 @@
 
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Growth Marketer Toolkit</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<style>
-:root {
-  --bg: #000;
-  --bg-surface: #0a0a0a;
-  --bg-elevated: #111;
-  --text: #fff;
-  --text-muted: rgba(255,255,255,.5);
-  --border: rgba(255,255,255,.15);
-  --border-hover: rgba(255,255,255,.3);
-  --accent: #22c55e;
-  --accent-hover: #16a34a;
-  --accent-muted: rgba(34,197,94,.15);
-  --danger: #ef4444;
-  --warning: #f59e0b;
-  --info: #3b82f6;
-  --radius: 6px;
-  --font-mono: 'JetBrains Mono', monospace;
-  --font-heading: 'Space Mono', monospace;
-}
-
-[data-theme="light"] {
-  --bg: #fff;
-  --bg-surface: #f5f5f5;
-  --bg-elevated: #e5e5e5;
-  --text: #000;
-  --text-muted: rgba(0,0,0,.5);
-  --border: rgba(0,0,0,.15);
-  --border-hover: rgba(0,0,0,.3);
-  --accent-muted: rgba(34,197,94,.1);
-}
-
-* { margin:0; padding:0; box-sizing:border-box; }
-
-body {
-  font-family: var(--font-mono);
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-/* Layout */
-.app-container { display: flex; min-height: 100vh; }
-
-.sidebar {
-  width: 260px;
-  border-right: 1px solid var(--border);
-  padding: 24px 0;
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  overflow-y: auto;
-  background: var(--bg);
-  z-index: 100;
-}
-
-.sidebar-header {
-  padding: 0 20px 24px;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 8px;
-}
-
-.sidebar-header h1 {
-  font-family: var(--font-heading);
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-
-.sidebar-header p {
-  font-size: 11px;
-  color: var(--text-muted);
-  margin-top: 4px;
-}
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 20px;
-  cursor: pointer;
-  transition: all 0.15s;
-  font-size: 13px;
-  color: var(--text-muted);
-  border: none;
-  background: none;
-  width: 100%;
-  text-align: left;
-  font-family: var(--font-mono);
-}
-
-.nav-item:hover { color: var(--text); background: var(--bg-surface); }
-.nav-item.active { color: var(--accent); background: var(--accent-muted); border-right: 2px solid var(--accent); }
-.nav-item .nav-icon { font-size: 16px; width: 20px; text-align: center; }
-
-.main-content {
-  flex: 1;
-  margin-left: 260px;
-  padding: 32px 40px;
-  max-width: 1100px;
-}
-
-.tool-section { display: none; }
-.tool-section.active { display: block; }
-
-.tool-header {
-  margin-bottom: 28px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid var(--border);
-}
-
-.tool-header h2 {
-  font-family: var(--font-heading);
-  font-size: 20px;
-  font-weight: 700;
-  margin-bottom: 6px;
-}
-
-.tool-header p {
-  color: var(--text-muted);
-  font-size: 13px;
-}
-
-/* Form elements */
-textarea, input[type="text"], input[type="number"], input[type="url"], input[type="email"], select {
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-family: var(--font-mono);
-  font-size: 13px;
-  padding: 10px 12px;
-  border-radius: var(--radius);
-  width: 100%;
-  transition: border-color 0.15s;
-  outline: none;
-}
-
-textarea:focus, input:focus, select:focus {
-  border-color: var(--accent);
-}
-
-textarea {
-  resize: vertical;
-  min-height: 160px;
-}
-
-label {
-  display: block;
-  font-size: 12px;
-  color: var(--text-muted);
-  margin-bottom: 6px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  border: 1px solid var(--border);
-  background: var(--bg-surface);
-  color: var(--text);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  border-radius: var(--radius);
-  cursor: pointer;
-  transition: all 0.15s;
-  font-weight: 500;
-}
-
-.btn:hover { border-color: var(--border-hover); background: var(--bg-elevated); }
-
-.btn-primary {
-  background: var(--accent);
-  color: #000;
-  border-color: var(--accent);
-}
-.btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
-
-.btn-danger { border-color: var(--danger); color: var(--danger); }
-.btn-danger:hover { background: rgba(239,68,68,.1); }
-
-.btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
-
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-bottom: 16px;
-}
-
-.form-group { margin-bottom: 16px; }
-
-.two-panel {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-
-.panel-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-/* Stats grid */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-.stat-card {
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 14px 16px;
-  text-align: center;
-}
-
-.stat-value {
-  font-size: 24px;
-  font-weight: 700;
-  font-family: var(--font-heading);
-  color: var(--accent);
-}
-
-.stat-label {
-  font-size: 10px;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-top: 4px;
-}
-
-/* Toggle buttons */
-.toggle-group {
-  display: inline-flex;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-}
-
-.toggle-btn {
-  padding: 6px 14px;
-  background: var(--bg-surface);
-  color: var(--text-muted);
-  border: none;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-
-.toggle-btn:not(:last-child) { border-right: 1px solid var(--border); }
-.toggle-btn.active { background: var(--accent); color: #000; }
-.toggle-btn:hover:not(.active) { color: var(--text); }
-
-/* Reading level badge */
-.reading-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 18px;
-  border-radius: var(--radius);
-  font-weight: 600;
-  font-size: 14px;
-  margin-top: 8px;
-}
-
-.grade-good { background: rgba(34,197,94,.15); color: #22c55e; border: 1px solid rgba(34,197,94,.3); }
-.grade-ok { background: rgba(245,158,11,.15); color: #f59e0b; border: 1px solid rgba(245,158,11,.3); }
-.grade-hard { background: rgba(239,68,68,.15); color: #ef4444; border: 1px solid rgba(239,68,68,.3); }
-
-/* Output preview */
-.output-preview {
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px;
-  margin-top: 16px;
-  word-break: break-all;
-  font-size: 13px;
-  min-height: 60px;
-}
-
-.output-preview a { color: var(--accent); }
-
-/* QR grid */
-.qr-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 16px;
-  margin-top: 16px;
-}
-
-.qr-item {
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px;
-  text-align: center;
-}
-
-.qr-item canvas { max-width: 100%; }
-.qr-item p {
-  font-size: 11px;
-  color: var(--text-muted);
-  margin-top: 8px;
-  word-break: break-all;
-}
-
-/* Meta results */
-.meta-result {
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px;
-  margin-bottom: 12px;
-}
-
-.meta-result h4 {
-  font-size: 14px;
-  margin-bottom: 8px;
-  color: var(--accent);
-}
-
-.meta-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 12px;
-}
-
-.meta-table td {
-  padding: 6px 8px;
-  border-bottom: 1px solid var(--border);
-  vertical-align: top;
-}
-
-.meta-table td:first-child {
-  color: var(--text-muted);
-  width: 160px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-size: 11px;
-}
-
-/* Theme toggle */
-.theme-toggle {
-  position: fixed;
-  top: 16px;
-  right: 20px;
-  z-index: 200;
-}
-
-/* Delimiter specific */
-.delim-options {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 12px;
-  margin-bottom: 16px;
-  padding: 16px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-}
-
-.delim-option label {
-  margin-bottom: 4px;
-}
-
-.radio-group, .check-group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.radio-pill, .check-pill {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 10px;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  font-size: 12px;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-
-.radio-pill:hover, .check-pill:hover { border-color: var(--border-hover); }
-.radio-pill.active, .check-pill.active { border-color: var(--accent); background: var(--accent-muted); color: var(--accent); }
-
-.radio-pill input, .check-pill input { display: none; }
-
-/* Toast notification */
-.toast {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  background: var(--accent);
-  color: #000;
-  padding: 10px 20px;
-  border-radius: var(--radius);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 600;
-  transform: translateY(80px);
-  opacity: 0;
-  transition: all 0.3s;
-  z-index: 1000;
-}
-
-.toast.show { transform: translateY(0); opacity: 1; }
-
-/* Responsive */
-@media (max-width: 768px) {
-  .sidebar { width: 60px; padding: 16px 0; }
-  .sidebar-header { display: none; }
-  .nav-item span:not(.nav-icon) { display: none; }
-  .nav-item { padding: 12px; justify-content: center; }
-  .main-content { margin-left: 60px; padding: 20px; }
-  .two-panel, .form-row { grid-template-columns: 1fr; }
-}
-
-/* Scrollbar */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-
-/* Bulk import table */
-.bulk-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 12px;
-  margin-top: 12px;
-}
-.bulk-table th, .bulk-table td {
-  padding: 8px 10px;
-  border: 1px solid var(--border);
-  text-align: left;
-}
-.bulk-table th {
-  background: var(--bg-elevated);
-  text-transform: uppercase;
-  font-size: 11px;
-  letter-spacing: 0.05em;
-  color: var(--text-muted);
-}
-.bulk-table td { word-break: break-all; }
-
-.tag-input-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-}
-
-/* UTM Builder */
-.utm-hint {
-  display: block;
-  font-size: 11px;
-  color: var(--text-muted);
-  margin-top: 4px;
-  font-weight: 400;
-  text-transform: none;
-  letter-spacing: normal;
-}
-
-.utm-parsed-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-  margin-top: 12px;
-}
-
-.utm-parsed-table th {
-  text-align: left;
-  padding: 8px 12px;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-muted);
-}
-
-.utm-parsed-table td {
-  padding: 10px 12px;
-  border: 1px solid var(--border);
-  vertical-align: middle;
-}
-
-.utm-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 3px 10px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 600;
-}
-
-.utm-status-ok { background: rgba(34,197,94,.15); color: #22c55e; }
-.utm-status-warn { background: rgba(245,158,11,.15); color: #f59e0b; }
-.utm-status-miss { background: rgba(239,68,68,.15); color: #ef4444; }
-.utm-status-info { background: rgba(59,130,246,.15); color: #3b82f6; }
-
-.utm-summary {
-  display: flex;
-  gap: 12px;
-  margin-top: 16px;
-  flex-wrap: wrap;
-}
-
-.utm-summary-card {
-  flex: 1;
-  min-width: 160px;
-  padding: 14px 16px;
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  text-align: center;
-}
-
-.utm-summary-card .stat-value { font-size: 20px; }
-
-/* Retention Analyzer */
-.retention-layout {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 20px;
-  align-items: start;
-}
-
-.retention-chart-wrap canvas { max-width: 100%; }
-
-.retention-summary-wrap .bulk-table { margin-top: 0; }
-
-input[type="file"] {
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-family: var(--font-mono);
-  font-size: 13px;
-  border-radius: var(--radius);
-  width: 100%;
-  cursor: pointer;
-}
-
-input[type="file"]::file-selector-button {
-  background: var(--accent);
-  color: #000;
-  border: none;
-  padding: 8px 16px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 500;
-  border-radius: var(--radius);
-  cursor: pointer;
-  margin-right: 12px;
-}
-
-input[type="file"]::file-selector-button:hover { background: var(--accent-hover); }
-
-@media (max-width: 768px) {
-  .retention-layout { grid-template-columns: 1fr; }
-}
-
-/* Spinner Wheel */
-.spinner-area {
-  display: flex;
-  gap: 24px;
-  align-items: flex-start;
-  margin-top: 16px;
-}
-
-.spinner-container {
-  position: relative;
-  width: 400px;
-  height: 400px;
-  flex-shrink: 0;
-}
-
-.spinner-wrapper {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  transition: transform 5s cubic-bezier(0.33, 1, 0.68, 1);
-}
-
-.spinner-wrapper canvas { width: 100%; height: 100%; }
-
-.spinner-pointer {
-  position: absolute;
-  top: -12px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 28px;
-  pointer-events: none;
-  z-index: 5;
-  filter: drop-shadow(0 2px 2px rgba(0,0,0,.3));
-}
-
-.spinner-sidebar { flex: 1; min-width: 200px; }
-
-.spinner-result {
-  text-align: center;
-  font-family: var(--font-heading);
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--accent);
-  min-height: 28px;
-  margin-top: 12px;
-}
-
-@media (max-width: 768px) {
-  .spinner-area { flex-direction: column; align-items: center; }
-  .spinner-container { width: 300px; height: 300px; }
-}
-
-/* Name Draw Grid */
-.draw-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  gap: 8px;
-  margin-top: 16px;
-}
-
-.draw-grid-item {
-  padding: 10px 8px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  text-align: center;
-  font-size: 12px;
-  font-family: var(--font-mono);
-  transition: all 0.2s;
-  word-break: break-word;
-}
-
-.draw-grid-item.highlight {
-  background: var(--accent);
-  color: #000;
-  border-color: var(--accent);
-  font-weight: 700;
-  transform: scale(1.05);
-  box-shadow: 0 0 12px rgba(34, 197, 94, 0.4);
-}
-
-.draw-winner-banner {
-  text-align: center;
-  font-family: var(--font-heading);
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--accent);
-  min-height: 32px;
-  margin: 16px 0;
-  padding: 12px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--accent-muted);
-}
-
-/* Business Days Calculator */
-input[type="date"] {
-  font-family: var(--font-mono);
-  font-size: 14px;
-  padding: 10px 12px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--bg-surface);
-  color: var(--text);
-  width: 100%;
-}
-input[type="date"]:focus {
-  outline: none;
-  border-color: var(--accent);
-}
-input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(1);
-  cursor: pointer;
-}
-[data-theme="light"] input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: none;
-}
-.bizdays-duration {
-  background: var(--accent-muted);
-  border: 1px solid var(--accent);
-  border-radius: var(--radius);
-  padding: 16px;
-  text-align: center;
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--accent);
-  margin-bottom: 16px;
-}
-.bizdays-holiday-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 8px;
-}
-.bizdays-holiday-pill {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 4px 12px;
-  font-size: 12px;
-  color: var(--text-muted);
-}
-.bizdays-ref-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 12px;
-  font-size: 13px;
-}
-.bizdays-ref-table th,
-.bizdays-ref-table td {
-  border: 1px solid var(--border);
-  padding: 8px 12px;
-  text-align: left;
-}
-.bizdays-ref-table th {
-  background: var(--bg-elevated);
-  font-weight: 600;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-muted);
-}
-.bizdays-ref-table tr:hover td {
-  background: var(--accent-muted);
-}
-#bizdays-results { display: none; }
-.bizdays-manual-row { display: flex; gap: 12px; align-items: flex-end; }
-.bizdays-manual-row .form-group { flex: 1; }
-@media (max-width: 768px) {
-  .bizdays-manual-row { flex-direction: column; }
-}
-</style>
+<link rel="stylesheet" href="styles.min.css?v=2">
 </head>
 <body>
 
 <div class="toast" id="toast"></div>
 
-<button class="btn theme-toggle" onclick="toggleTheme()" id="themeBtn">Light</button>
 
 <div class="app-container">
   <!-- Sidebar -->
@@ -770,51 +24,162 @@ input[type="date"]::-webkit-calendar-picker-indicator {
       <h1>GM Toolkit</h1>
       <p>Growth Marketer Tools</p>
     </div>
-    <button class="nav-item active" data-tool="json-csv">
-      <span class="nav-icon">{}</span><span>JSON to CSV</span>
+    <button class="nav-item active" data-tool="gallery">
+      <span class="nav-icon"><i data-lucide="home"></i></span><span>All Tools</span>
+    </button>
+    <button class="nav-item" data-tool="json-csv">
+      <span class="nav-icon"><i data-lucide="braces"></i></span><span>JSON to CSV</span>
     </button>
     <button class="nav-item" data-tool="delimiter">
-      <span class="nav-icon">|</span><span>Delimiter Tool</span>
+      <span class="nav-icon"><i data-lucide="columns-2"></i></span><span>Delimiter Tool</span>
     </button>
     <button class="nav-item" data-tool="wordcount">
-      <span class="nav-icon">#</span><span>Word Count</span>
+      <span class="nav-icon"><i data-lucide="hash"></i></span><span>Word Count</span>
     </button>
     <button class="nav-item" data-tool="urlencode">
-      <span class="nav-icon">%</span><span>URL Encode</span>
+      <span class="nav-icon"><i data-lucide="percent"></i></span><span>URL Encode</span>
     </button>
     <button class="nav-item" data-tool="mailto">
-      <span class="nav-icon">@</span><span>Mailto Gen</span>
+      <span class="nav-icon"><i data-lucide="mail"></i></span><span>Mailto Gen</span>
     </button>
     <button class="nav-item" data-tool="qrcode">
-      <span class="nav-icon">Q</span><span>QR Code</span>
+      <span class="nav-icon"><i data-lucide="qr-code"></i></span><span>QR Code</span>
     </button>
     <button class="nav-item" data-tool="metadata">
-      <span class="nav-icon">&lt;&gt;</span><span>Meta Extract</span>
+      <span class="nav-icon"><i data-lucide="code"></i></span><span>Meta Extract</span>
     </button>
     <button class="nav-item" data-tool="utm">
-      <span class="nav-icon">~</span><span>UTM Builder</span>
+      <span class="nav-icon"><i data-lucide="link"></i></span><span>UTM Builder</span>
     </button>
     <button class="nav-item" data-tool="retention">
-      <span class="nav-icon">R</span><span>Retention</span>
+      <span class="nav-icon"><i data-lucide="trending-down"></i></span><span>Retention</span>
     </button>
     <button class="nav-item" data-tool="tts">
-      <span class="nav-icon">S</span><span>Text to Speech</span>
+      <span class="nav-icon"><i data-lucide="volume-2"></i></span><span>Text to Speech</span>
     </button>
     <button class="nav-item" data-tool="spinner">
-      <span class="nav-icon">O</span><span>Spin Wheel</span>
+      <span class="nav-icon"><i data-lucide="disc"></i></span><span>Spin Wheel</span>
     </button>
     <button class="nav-item" data-tool="namedraw">
-      <span class="nav-icon">?</span><span>Name Draw</span>
+      <span class="nav-icon"><i data-lucide="shuffle"></i></span><span>Name Draw</span>
     </button>
     <button class="nav-item" data-tool="bizdays">
-      <span class="nav-icon">B</span><span>Date Calculator</span>
+      <span class="nav-icon"><i data-lucide="calendar-days"></i></span><span>Date Calculator</span>
+    </button>
+    <button class="nav-item" data-tool="emailfinder">
+      <span class="nav-icon"><i data-lucide="at-sign"></i></span><span>Email Finder</span>
+    </button>
+    <button class="nav-item" data-tool="nps">
+      <span class="nav-icon"><i data-lucide="bar-chart-3"></i></span><span>NPS Calculator</span>
+    </button>
+    <button class="nav-item" data-tool="mediabuy">
+      <span class="nav-icon"><i data-lucide="calculator"></i></span><span>Media Buying</span>
+    </button>
+    <button class="nav-item" data-tool="exit-intent">
+      <span class="nav-icon"><i data-lucide="mouse-pointer-click"></i></span><span>Exit Intent</span>
     </button>
   </nav>
 
   <main class="main-content">
 
+    <!-- Gallery -->
+    <section class="tool-section active" id="tool-gallery">
+      <div class="tool-header">
+        <h2>Growth Marketer Toolkit</h2>
+        <p>17 browser-based tools for growth marketers. No backend, no signups — everything runs in your browser.</p>
+      </div>
+
+      <div class="gallery-grid">
+        <div class="gallery-card" data-tool="json-csv">
+          <div class="gallery-card-icon"><i data-lucide="braces"></i></div>
+          <h3>JSON to CSV</h3>
+          <p>Convert JSON to CSV with nested object support and one-click export.</p>
+        </div>
+        <div class="gallery-card" data-tool="delimiter">
+          <div class="gallery-card-icon"><i data-lucide="columns-2"></i></div>
+          <h3>Delimiter Tool</h3>
+          <p>Split, join, deduplicate, quote, and convert between text formats.</p>
+        </div>
+        <div class="gallery-card" data-tool="wordcount">
+          <div class="gallery-card-icon"><i data-lucide="hash"></i></div>
+          <h3>Word Count</h3>
+          <p>Count words, characters, sentences, and grade readability level.</p>
+        </div>
+        <div class="gallery-card" data-tool="urlencode">
+          <div class="gallery-card-icon"><i data-lucide="percent"></i></div>
+          <h3>URL Encode/Decode</h3>
+          <p>Encode or decode URL components and full URLs instantly.</p>
+        </div>
+        <div class="gallery-card" data-tool="mailto">
+          <div class="gallery-card-icon"><i data-lucide="mail"></i></div>
+          <h3>Mailto Generator</h3>
+          <p>Build mailto links with subject, CC, BCC, and rich body content.</p>
+        </div>
+        <div class="gallery-card" data-tool="qrcode">
+          <div class="gallery-card-icon"><i data-lucide="qr-code"></i></div>
+          <h3>QR Code Generator</h3>
+          <p>Generate QR codes from URLs with bulk import and export.</p>
+        </div>
+        <div class="gallery-card" data-tool="metadata">
+          <div class="gallery-card-icon"><i data-lucide="code"></i></div>
+          <h3>Meta Extractor</h3>
+          <p>Extract Open Graph, Twitter Cards, and meta tags from any URL.</p>
+        </div>
+        <div class="gallery-card" data-tool="utm">
+          <div class="gallery-card-icon"><i data-lucide="link"></i></div>
+          <h3>UTM Builder</h3>
+          <p>Build and parse campaign URLs with UTM parameters and validation.</p>
+        </div>
+        <div class="gallery-card" data-tool="retention">
+          <div class="gallery-card-icon"><i data-lucide="trending-down"></i></div>
+          <h3>Retention Analyzer</h3>
+          <p>Analyze webinar attendee engagement drop-off over time.</p>
+        </div>
+        <div class="gallery-card" data-tool="tts">
+          <div class="gallery-card-icon"><i data-lucide="volume-2"></i></div>
+          <h3>Text to Speech</h3>
+          <p>Paste text and listen with browser speech synthesis. No API needed.</p>
+        </div>
+        <div class="gallery-card" data-tool="spinner">
+          <div class="gallery-card-icon"><i data-lucide="disc"></i></div>
+          <h3>Spin the Wheel</h3>
+          <p>Random spinner for contests, giveaways, and team selection.</p>
+        </div>
+        <div class="gallery-card" data-tool="namedraw">
+          <div class="gallery-card-icon"><i data-lucide="shuffle"></i></div>
+          <h3>Name Draw</h3>
+          <p>Animated grid-based name picker for live webinar giveaways.</p>
+        </div>
+        <div class="gallery-card" data-tool="bizdays">
+          <div class="gallery-card-icon"><i data-lucide="calendar-days"></i></div>
+          <h3>Date Calculator</h3>
+          <p>Calculate business days between dates excluding US holidays.</p>
+        </div>
+        <div class="gallery-card" data-tool="emailfinder">
+          <div class="gallery-card-icon"><i data-lucide="at-sign"></i></div>
+          <h3>Email Finder</h3>
+          <p>Generate email permutations with DNS and MX record validation.</p>
+        </div>
+        <div class="gallery-card" data-tool="nps">
+          <div class="gallery-card-icon"><i data-lucide="bar-chart-3"></i></div>
+          <h3>NPS Calculator</h3>
+          <p>Calculate Net Promoter Score from survey data with visual breakdown.</p>
+        </div>
+        <div class="gallery-card" data-tool="mediabuy">
+          <div class="gallery-card-icon"><i data-lucide="calculator"></i></div>
+          <h3>Media Buying Calc</h3>
+          <p>Plan ad campaigns with breakeven analysis, B2B/B2C funnels, and scenario comparison.</p>
+        </div>
+        <div class="gallery-card" data-tool="exit-intent">
+          <div class="gallery-card-icon"><i data-lucide="mouse-pointer-click"></i></div>
+          <h3>Exit Intent</h3>
+          <p>Drop-in popup script for capturing leaving visitors.</p>
+        </div>
+      </div>
+    </section>
+
     <!-- 1. JSON to CSV -->
-    <section class="tool-section active" id="tool-json-csv">
+    <section class="tool-section" id="tool-json-csv">
       <div class="tool-header">
         <h2>JSON to CSV Converter</h2>
         <p>Paste JSON data and convert to CSV format with one-click export.</p>
@@ -1106,67 +471,162 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
       <!-- CREATE MODE -->
       <div id="utmCreatePanel">
-        <div class="form-group">
-          <label>Website URL <span style="color:var(--danger)">*</span></label>
-          <input type="url" id="utmBaseUrl" placeholder="https://example.com/landing-page" oninput="buildUtmUrl()">
+        <div class="toggle-group" style="margin-bottom:16px">
+          <button class="toggle-btn active" id="utmBuildSingleBtn" onclick="setUtmBuildMode('single')">Single</button>
+          <button class="toggle-btn" id="utmBuildBulkBtn" onclick="setUtmBuildMode('bulk')">Bulk</button>
         </div>
-        <div class="form-row">
+
+        <!-- Single Build -->
+        <div id="utmSingleBuildPanel">
           <div class="form-group">
-            <label>utm_source <span style="color:var(--danger)">*</span></label>
-            <input type="text" id="utmSource" placeholder="e.g. google, newsletter, facebook" oninput="buildUtmUrl()">
-            <span class="utm-hint">Identifies where traffic comes from</span>
+            <label>Website URL <span style="color:var(--danger)">*</span></label>
+            <input type="url" id="utmBaseUrl" placeholder="https://example.com/landing-page" oninput="buildUtmUrl()">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>utm_source <span style="color:var(--danger)">*</span></label>
+              <input type="text" id="utmSource" placeholder="e.g. google, newsletter, facebook" oninput="buildUtmUrl()">
+              <span class="utm-hint">Identifies where traffic comes from</span>
+            </div>
+            <div class="form-group">
+              <label>utm_medium <span style="color:var(--danger)">*</span></label>
+              <input type="text" id="utmMedium" placeholder="e.g. cpc, email, social, banner" oninput="buildUtmUrl()">
+              <span class="utm-hint">Marketing medium or channel type</span>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>utm_campaign <span style="color:var(--danger)">*</span></label>
+              <input type="text" id="utmCampaign" placeholder="e.g. spring_sale, product_launch" oninput="buildUtmUrl()">
+              <span class="utm-hint">Campaign name, promo, or slogan</span>
+            </div>
+            <div class="form-group">
+              <label>utm_term <span style="color:var(--text-muted)">(optional)</span></label>
+              <input type="text" id="utmTerm" placeholder="e.g. running+shoes, marketing+tools" oninput="buildUtmUrl()">
+              <span class="utm-hint">Paid search keywords</span>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>utm_content <span style="color:var(--text-muted)">(optional)</span></label>
+              <input type="text" id="utmContent" placeholder="e.g. logolink, textlink, hero_banner" oninput="buildUtmUrl()">
+              <span class="utm-hint">Differentiate ads or links pointing to the same URL</span>
+            </div>
+            <div class="form-group">
+              <label>utm_id <span style="color:var(--text-muted)">(optional — GA4)</span></label>
+              <input type="text" id="utmId" placeholder="e.g. abc.123" oninput="buildUtmUrl()">
+              <span class="utm-hint">Campaign ID for GA4 data import</span>
+            </div>
           </div>
           <div class="form-group">
-            <label>utm_medium <span style="color:var(--danger)">*</span></label>
-            <input type="text" id="utmMedium" placeholder="e.g. cpc, email, social, banner" oninput="buildUtmUrl()">
-            <span class="utm-hint">Marketing medium or channel type</span>
+            <label>Generated URL</label>
+            <div class="output-preview" id="utmOutputUrl" style="min-height:48px;cursor:pointer" onclick="copyUtmUrl()">
+              <span style="color:var(--text-muted)">Fill in the required fields above...</span>
+            </div>
           </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>utm_campaign <span style="color:var(--danger)">*</span></label>
-            <input type="text" id="utmCampaign" placeholder="e.g. spring_sale, product_launch" oninput="buildUtmUrl()">
-            <span class="utm-hint">Campaign name, promo, or slogan</span>
-          </div>
-          <div class="form-group">
-            <label>utm_term <span style="color:var(--text-muted)">(optional)</span></label>
-            <input type="text" id="utmTerm" placeholder="e.g. running+shoes, marketing+tools" oninput="buildUtmUrl()">
-            <span class="utm-hint">Paid search keywords</span>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>utm_content <span style="color:var(--text-muted)">(optional)</span></label>
-            <input type="text" id="utmContent" placeholder="e.g. logolink, textlink, hero_banner" oninput="buildUtmUrl()">
-            <span class="utm-hint">Differentiate ads or links pointing to the same URL</span>
-          </div>
-          <div class="form-group">
-            <label>utm_id <span style="color:var(--text-muted)">(optional — GA4)</span></label>
-            <input type="text" id="utmId" placeholder="e.g. abc.123" oninput="buildUtmUrl()">
-            <span class="utm-hint">Campaign ID for GA4 data import</span>
+          <div class="btn-group">
+            <button class="btn btn-primary" onclick="copyUtmUrl()">Copy URL</button>
+            <button class="btn" onclick="copyUtmShort()">Copy (without protocol)</button>
+            <button class="btn" onclick="utmSaveBuild()">Save to History</button>
+            <button class="btn btn-danger" onclick="clearUtmBuilder()">Clear</button>
           </div>
         </div>
 
-        <div class="form-group">
-          <label>Generated URL</label>
-          <div class="output-preview" id="utmOutputUrl" style="min-height:48px;cursor:pointer" onclick="copyUtmUrl()">
-            <span style="color:var(--text-muted)">Fill in the required fields above...</span>
+        <!-- Bulk Build -->
+        <div id="utmBulkBuildPanel" style="display:none">
+          <div class="form-group">
+            <label>Base URLs (one per line) <span style="color:var(--danger)">*</span></label>
+            <textarea id="utmBulkBaseUrls" placeholder="https://example.com/page-1&#10;https://example.com/page-2&#10;https://example.com/page-3" style="min-height:100px"></textarea>
           </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>utm_source <span style="color:var(--danger)">*</span></label>
+              <input type="text" id="utmBulkSource" placeholder="e.g. google, newsletter">
+              <span class="utm-hint">Applied to all URLs</span>
+            </div>
+            <div class="form-group">
+              <label>utm_medium <span style="color:var(--danger)">*</span></label>
+              <input type="text" id="utmBulkMedium" placeholder="e.g. cpc, email, social">
+              <span class="utm-hint">Applied to all URLs</span>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>utm_campaign <span style="color:var(--danger)">*</span></label>
+              <input type="text" id="utmBulkCampaign" placeholder="e.g. spring_sale">
+              <span class="utm-hint">Applied to all URLs</span>
+            </div>
+            <div class="form-group">
+              <label>utm_term <span style="color:var(--text-muted)">(optional)</span></label>
+              <input type="text" id="utmBulkTerm" placeholder="e.g. running+shoes">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>utm_content <span style="color:var(--text-muted)">(optional)</span></label>
+              <input type="text" id="utmBulkContent" placeholder="e.g. hero_banner">
+            </div>
+            <div class="form-group">
+              <label>utm_id <span style="color:var(--text-muted)">(optional — GA4)</span></label>
+              <input type="text" id="utmBulkId" placeholder="e.g. abc.123">
+            </div>
+          </div>
+          <div class="btn-group">
+            <button class="btn btn-primary" onclick="utmBuildBulk()">Build All</button>
+            <button class="btn btn-danger" onclick="utmClearBulkBuild()">Clear</button>
+          </div>
+          <div id="utmBulkBuildResults"></div>
         </div>
-        <div class="btn-group">
-          <button class="btn btn-primary" onclick="copyUtmUrl()">Copy URL</button>
-          <button class="btn" onclick="copyUtmShort()">Copy (without protocol)</button>
-          <button class="btn btn-danger" onclick="clearUtmBuilder()">Clear</button>
+
+        <!-- Builder History -->
+        <h4 class="mb-section-title" style="margin-top:32px">Builder History</h4>
+        <div id="utmBuildHistoryContainer">
+          <p style="color:var(--text-muted);font-size:13px">No URLs built yet. Build a URL and click "Save to History".</p>
+        </div>
+        <div class="btn-group" id="utmBuildHistoryActions" style="display:none;margin-top:12px">
+          <button class="btn btn-primary" onclick="utmExportBuiltCsv()">Export CSV</button>
+          <button class="btn btn-danger" onclick="utmClearBuildHistory()">Clear History</button>
         </div>
       </div>
 
       <!-- PARSE MODE -->
       <div id="utmParsePanel" style="display:none">
-        <div class="form-group">
-          <label>Paste URL with UTM parameters</label>
-          <textarea id="utmParseInput" placeholder="https://example.com/page?utm_source=google&utm_medium=cpc&utm_campaign=spring_sale" style="min-height:80px" oninput="parseUtmUrl()"></textarea>
+        <div class="toggle-group" style="margin-bottom:16px">
+          <button class="toggle-btn active" id="utmParseSingleBtn" onclick="setUtmParseMode('single')">Single</button>
+          <button class="toggle-btn" id="utmParseBulkBtn" onclick="setUtmParseMode('bulk')">Bulk</button>
         </div>
-        <div id="utmParseResults"></div>
+
+        <!-- Single Parse -->
+        <div id="utmSingleParsePanel">
+          <div class="form-group">
+            <label>Paste URL with UTM parameters</label>
+            <textarea id="utmParseInput" placeholder="https://example.com/page?utm_source=google&utm_medium=cpc&utm_campaign=spring_sale" style="min-height:80px" oninput="parseUtmUrl()"></textarea>
+          </div>
+          <div id="utmParseResults"></div>
+        </div>
+
+        <!-- Bulk Parse -->
+        <div id="utmBulkParsePanel" style="display:none">
+          <div class="form-group">
+            <label>Paste URLs with UTM parameters (one per line)</label>
+            <textarea id="utmBulkParseUrls" placeholder="https://example.com?utm_source=google&utm_medium=cpc&utm_campaign=spring&#10;https://example.com?utm_source=facebook&utm_medium=social&utm_campaign=summer" style="min-height:100px"></textarea>
+          </div>
+          <div class="btn-group">
+            <button class="btn btn-primary" onclick="utmParseBulk()">Parse All</button>
+            <button class="btn btn-danger" onclick="utmClearBulkParse()">Clear</button>
+          </div>
+          <div id="utmBulkParseResults"></div>
+        </div>
+
+        <!-- Parser History -->
+        <h4 class="mb-section-title" style="margin-top:32px">Parser History</h4>
+        <div id="utmParseHistoryContainer">
+          <p style="color:var(--text-muted);font-size:13px">No URLs parsed yet.</p>
+        </div>
+        <div class="btn-group" id="utmParseHistoryActions" style="display:none;margin-top:12px">
+          <button class="btn btn-primary" onclick="utmExportParsedCsv()">Export CSV</button>
+          <button class="btn btn-danger" onclick="utmClearParseHistory()">Clear History</button>
+        </div>
       </div>
     </section>
 
@@ -1461,6 +921,726 @@ input[type="date"]::-webkit-calendar-picker-indicator {
       </div>
     </section>
 
+    <!-- 14. Email Finder / Permutator -->
+    <section class="tool-section" id="tool-emailfinder">
+      <div class="tool-header">
+        <h2>Email Finder</h2>
+        <p>Generate common email permutations for a person, verify the domain's MX records, and export results for cold outreach.</p>
+      </div>
+
+      <div class="output-preview" style="margin-bottom:16px;font-size:12px;margin-top:0">
+        <strong style="color:var(--accent)">Privacy:</strong> All processing happens in your browser. DNS lookups use Google's public DNS-over-HTTPS API. No email addresses are sent to any server.
+      </div>
+
+      <!-- Input Form -->
+      <div class="form-row">
+        <div class="form-group">
+          <label>First Name <span style="color:var(--danger)">*</span></label>
+          <input type="text" id="efFirstName" placeholder="Jonny">
+        </div>
+        <div class="form-group">
+          <label>Last Name <span style="color:var(--danger)">*</span></label>
+          <input type="text" id="efLastName" placeholder="Chan">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Company Domain <span style="color:var(--danger)">*</span></label>
+        <div style="display:flex;gap:8px">
+          <input type="text" id="efDomain" placeholder="helloworld.com" style="flex:1">
+          <button class="btn btn-primary" onclick="emailfinderGenerate()">Generate Emails</button>
+        </div>
+      </div>
+
+      <!-- Domain Validation Stats -->
+      <div id="efDomainResults" style="display:none">
+        <div class="stats-grid" style="grid-template-columns:repeat(4,1fr)">
+          <div class="stat-card">
+            <div class="stat-value" id="efStatDomain" style="font-size:14px">-</div>
+            <div class="stat-label">Domain</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="efStatMxCount" style="font-size:18px">-</div>
+            <div class="stat-label">MX Records</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="efStatProvider" style="font-size:14px">-</div>
+            <div class="stat-label">Email Provider</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="efStatStatus">-</div>
+            <div class="stat-label">Domain Status</div>
+          </div>
+        </div>
+
+        <!-- MX Records Table -->
+        <div style="margin-bottom:16px">
+          <label>MX Records</label>
+          <div style="max-height:180px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius)">
+            <table class="bulk-table" style="margin-top:0">
+              <thead><tr><th>Priority</th><th>Mail Server</th><th>Provider</th></tr></thead>
+              <tbody id="efMxBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="btn-group" style="margin-bottom:16px" id="efActions">
+        <button class="btn" onclick="emailfinderCopyAll()">Copy All Emails</button>
+        <button class="btn" onclick="emailfinderExportCsv()">Export CSV</button>
+        <button class="btn btn-danger" onclick="emailfinderClear()">Clear</button>
+      </div>
+
+      <!-- Email Permutations Table -->
+      <div id="efResults" style="display:none">
+        <label>Generated Email Permutations</label>
+        <div style="max-height:500px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius)">
+          <table class="bulk-table" style="margin-top:0">
+            <thead>
+              <tr>
+                <th style="width:40px">#</th>
+                <th>Email Address</th>
+                <th>Pattern</th>
+                <th style="width:100px">Domain Status</th>
+                <th style="width:60px">Copy</th>
+              </tr>
+            </thead>
+            <tbody id="efEmailBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- DNS Records Table -->
+      <div id="efDnsResults" style="display:none;margin-top:16px">
+        <label>DNS Records</label>
+        <div style="max-height:200px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius)">
+          <table class="bulk-table" style="margin-top:0">
+            <thead><tr><th>Type</th><th>Name</th><th>Value</th><th>TTL</th></tr></thead>
+            <tbody id="efDnsBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="output-preview" style="margin-top:16px;font-size:12px">
+        <strong style="color:var(--accent)">How it works:</strong> Generates 25+ common email permutations from the name and domain you provide.
+        Performs a DNS MX record lookup via Google's public DNS API to verify the domain accepts email and identifies the email provider.
+        <strong>Note:</strong> True email verification (SMTP check) requires a server-side component. The MX check confirms
+        the domain <em>can</em> receive email, but cannot confirm if an individual address exists. This is standard practice for email hygiene before cold outreach.
+      </div>
+    </section>
+
+    <!-- 15. NPS Calculator -->
+    <section class="tool-section" id="tool-nps">
+      <div class="tool-header">
+        <h2>NPS Calculator</h2>
+        <p>Calculate your Net Promoter Score from survey responses. Paste data, upload CSV, or load sample data to see results instantly.</p>
+      </div>
+
+      <div class="output-preview" style="margin-bottom:16px;font-size:12px;margin-top:0">
+        <strong style="color:var(--accent)">How NPS works:</strong> Respondents rate 0-10. <strong>Promoters</strong> (9-10) love your product.
+        <strong>Passives</strong> (7-8) are satisfied but unenthusiastic. <strong>Detractors</strong> (0-6) are unhappy.
+        NPS = % Promoters &minus; % Detractors. Score ranges from &minus;100 to +100.
+      </div>
+
+      <!-- Input mode toggle -->
+      <div class="toggle-group" style="margin-bottom:16px">
+        <button class="toggle-btn active" id="npsModeText" onclick="npsSetMode('text')">Paste Data</button>
+        <button class="toggle-btn" id="npsModeUpload" onclick="npsSetMode('upload')">Upload CSV</button>
+      </div>
+
+      <!-- Paste mode -->
+      <div id="nps-text-panel">
+        <div class="form-group">
+          <label>Paste scores <span style="color:var(--text-muted)">(one number per line, or comma-separated, values 0-10)</span></label>
+          <textarea id="npsTextInput" style="min-height:140px" placeholder="9&#10;10&#10;7&#10;3&#10;8&#10;10&#10;6&#10;9&#10;5&#10;8"></textarea>
+        </div>
+      </div>
+
+      <!-- Upload mode -->
+      <div id="nps-upload-panel" style="display:none">
+        <div class="form-group">
+          <label>Upload CSV <span style="color:var(--text-muted)">(must contain a "score" column with values 0-10)</span></label>
+          <input type="file" id="npsFileInput" accept=".csv" style="padding:8px">
+        </div>
+        <div class="nps-dropzone" id="npsDropzone">
+          <p>Drag &amp; drop a CSV file here</p>
+          <p style="font-size:11px;color:var(--text-muted);margin-top:4px">or use the file picker above</p>
+        </div>
+      </div>
+
+      <div class="btn-group" style="margin-bottom:20px">
+        <button class="btn btn-primary" onclick="npsCalculate()">Calculate NPS</button>
+        <button class="btn" onclick="npsLoadSample()">Load Sample Data</button>
+        <button class="btn" onclick="npsExportCsv()">Export CSV</button>
+        <button class="btn btn-danger" onclick="npsClear()">Clear</button>
+      </div>
+
+      <!-- NPS Score Display -->
+      <div id="npsResults" style="display:none">
+        <!-- Big NPS score -->
+        <div class="nps-score-banner" id="npsScoreBanner">
+          <div class="nps-score-value" id="npsScoreValue">0</div>
+          <div class="nps-score-label" id="npsScoreLabel">Net Promoter Score</div>
+          <div class="nps-score-range" id="npsScoreRange"></div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr)">
+          <div class="stat-card">
+            <div class="stat-value" id="npsTotalCount">0</div>
+            <div class="stat-label">Total Responses</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" style="color:#34C759" id="npsPromoterCount">0</div>
+            <div class="stat-label">Promoters (9-10)</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" style="color:#FF9F0A" id="npsPassiveCount">0</div>
+            <div class="stat-label">Passives (7-8)</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" style="color:#FF3B30" id="npsDetractorCount">0</div>
+            <div class="stat-label">Detractors (0-6)</div>
+          </div>
+        </div>
+
+        <!-- Stacked bar -->
+        <div class="form-group">
+          <label>Score Distribution</label>
+          <div class="nps-bar-container" id="npsBarContainer">
+            <div class="nps-bar-segment nps-bar-detractor" id="npsBarDetractor"></div>
+            <div class="nps-bar-segment nps-bar-passive" id="npsBarPassive"></div>
+            <div class="nps-bar-segment nps-bar-promoter" id="npsBarPromoter"></div>
+          </div>
+          <div class="nps-bar-legend">
+            <span><span class="nps-legend-dot" style="background:#FF3B30"></span> Detractors <span id="npsDetractorPct">0%</span></span>
+            <span><span class="nps-legend-dot" style="background:#FF9F0A"></span> Passives <span id="npsPassivePct">0%</span></span>
+            <span><span class="nps-legend-dot" style="background:#34C759"></span> Promoters <span id="npsPromoterPct">0%</span></span>
+          </div>
+        </div>
+
+        <!-- Score histogram chart -->
+        <div class="form-group">
+          <label>Response Breakdown (0-10)</label>
+          <div style="background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px">
+            <canvas id="npsHistogramChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Score table -->
+        <div style="margin-top:16px">
+          <label>Score Frequency Table</label>
+          <div style="border:1px solid var(--border);border-radius:var(--radius);overflow:hidden">
+            <table class="bulk-table" style="margin-top:0">
+              <thead>
+                <tr>
+                  <th>Score</th>
+                  <th>Count</th>
+                  <th>Percentage</th>
+                  <th>Category</th>
+                </tr>
+              </thead>
+              <tbody id="npsFreqBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="output-preview" style="margin-top:16px;font-size:12px">
+        <strong style="color:var(--accent)">NPS Benchmarks:</strong>
+        <span style="color:#FF3B30">Needs Improvement</span> (&minus;100 to 0) |
+        <span style="color:#FF9F0A">Good</span> (0 to 30) |
+        <span style="color:#34C759">Great</span> (30 to 70) |
+        <span style="color:#34C759;font-weight:600">World-class</span> (70 to 100)
+      </div>
+    </section>
+
+    <!-- 16. Media Buying Calculator -->
+    <section class="tool-section" id="tool-mediabuy">
+      <div class="tool-header">
+        <h2>Media Buying Calculator</h2>
+        <p>Plan ad campaigns, calculate breakeven numbers, compare B2B and B2C funnels, and save scenarios side by side.</p>
+      </div>
+
+      <div class="output-preview" style="margin-bottom:16px;font-size:12px;margin-top:0">
+        <strong style="color:var(--accent)">How it works:</strong> Enter any combination of ad metrics and the calculator fills in the rest.
+        Switch between B2B and B2C models to see funnel economics and breakeven analysis. Save labeled scenarios to compare campaigns.
+      </div>
+
+      <!-- ─── Core Ad Metrics ─── -->
+      <div class="mb-section-title">Core Ad Metrics</div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Total Spend ($)</label>
+          <input type="number" id="mbSpend" placeholder="5000" oninput="mbCalc()" min="0" step="any">
+        </div>
+        <div class="form-group">
+          <label>Impressions</label>
+          <input type="number" id="mbImpressions" placeholder="416667" oninput="mbCalc()" min="0" step="any">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Reach (unique people)</label>
+          <input type="number" id="mbReach" placeholder="250000" oninput="mbCalc()" min="0" step="any">
+        </div>
+        <div class="form-group">
+          <label>Frequency (avg views per person)</label>
+          <input type="number" id="mbFrequency" placeholder="2" oninput="mbCalc()" min="0" step="any">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>CPM ($) <span style="color:var(--text-muted)">cost per 1K impressions</span></label>
+          <input type="number" id="mbCPM" placeholder="12" oninput="mbCalc()" min="0" step="any">
+        </div>
+        <div class="form-group">
+          <label>CTR (%) <span style="color:var(--text-muted)">click-through rate</span></label>
+          <input type="number" id="mbCTR" placeholder="1.2" oninput="mbCalc()" min="0" max="100" step="any">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Clicks</label>
+          <input type="number" id="mbClicks" placeholder="5000" oninput="mbCalc()" min="0" step="any">
+        </div>
+        <div class="form-group">
+          <label>CPC ($) <span style="color:var(--text-muted)">cost per click</span></label>
+          <input type="number" id="mbCPC" placeholder="1.00" oninput="mbCalc()" min="0" step="any">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Conversion Rate (%) <span style="color:var(--text-muted)">on-page</span></label>
+          <input type="number" id="mbCVR" placeholder="3" oninput="mbCalc()" min="0" max="100" step="any">
+        </div>
+        <div class="form-group">
+          <label>Conversions</label>
+          <input type="number" id="mbConversions" placeholder="150" oninput="mbCalc()" min="0" step="any">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>CPA ($) <span style="color:var(--text-muted)">cost per acquisition</span></label>
+          <input type="number" id="mbCPA" placeholder="33.33" oninput="mbCalc()" min="0" step="any">
+        </div>
+        <div class="form-group"></div>
+      </div>
+
+      <!-- Computed Summary -->
+      <div class="stats-grid" id="mbCoreSummary" style="grid-template-columns:repeat(6,1fr)">
+        <div class="stat-card"><div class="stat-value" id="mbStatImpressions" style="font-size:16px">—</div><div class="stat-label">Impressions</div></div>
+        <div class="stat-card"><div class="stat-value" id="mbStatClicks" style="font-size:16px">—</div><div class="stat-label">Clicks</div></div>
+        <div class="stat-card"><div class="stat-value" id="mbStatConversions" style="font-size:16px">—</div><div class="stat-label">Conversions</div></div>
+        <div class="stat-card"><div class="stat-value" id="mbStatCPM" style="font-size:16px">—</div><div class="stat-label">CPM</div></div>
+        <div class="stat-card"><div class="stat-value" id="mbStatCTR" style="font-size:16px">—</div><div class="stat-label">CTR</div></div>
+        <div class="stat-card"><div class="stat-value" id="mbStatCPA" style="font-size:16px">—</div><div class="stat-label">CPA</div></div>
+      </div>
+
+      <!-- ─── B2B / B2C Toggle ─── -->
+      <div class="mb-section-title">Advanced Funnel Analysis</div>
+
+      <div class="toggle-group" style="margin-bottom:16px">
+        <button class="toggle-btn active" id="mbModeB2B" onclick="mbSetMode('b2b')">B2B / Enterprise</button>
+        <button class="toggle-btn" id="mbModeB2C" onclick="mbSetMode('b2c')">B2C / Direct to Consumer</button>
+      </div>
+
+      <!-- B2B Panel -->
+      <div id="mb-b2b-panel">
+        <div class="form-row">
+          <div class="form-group">
+            <label>ACV ($) <span style="color:var(--text-muted)">annual contract value</span></label>
+            <input type="number" id="mbACV" placeholder="2400" oninput="mbCalc()" min="0" step="any">
+          </div>
+          <div class="form-group">
+            <label>MQL &rarr; SQL Rate (%)</label>
+            <input type="number" id="mbMqlToSql" placeholder="40" oninput="mbCalc()" min="0" max="100" step="any">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>SQL &rarr; Closed Won Rate (%)</label>
+            <input type="number" id="mbSqlToClose" placeholder="25" oninput="mbCalc()" min="0" max="100" step="any">
+          </div>
+          <div class="form-group"></div>
+        </div>
+
+        <!-- B2B Results -->
+        <div class="stats-grid" style="grid-template-columns:repeat(3,1fr)">
+          <div class="stat-card"><div class="stat-value" id="mbB2bSQLs" style="font-size:18px">—</div><div class="stat-label">SQLs</div></div>
+          <div class="stat-card"><div class="stat-value" id="mbB2bClosedWon" style="font-size:18px">—</div><div class="stat-label">Closed Won</div></div>
+          <div class="stat-card"><div class="stat-value" id="mbB2bRevenue" style="font-size:18px">—</div><div class="stat-label">Revenue</div></div>
+        </div>
+        <div class="stats-grid" style="grid-template-columns:repeat(3,1fr)">
+          <div class="stat-card"><div class="stat-value" id="mbB2bROI" style="font-size:18px">—</div><div class="stat-label">ROI</div></div>
+          <div class="stat-card"><div class="stat-value" id="mbB2bBreakevenACV" style="font-size:18px">—</div><div class="stat-label">Breakeven ACV</div></div>
+          <div class="stat-card"><div class="stat-value" id="mbB2bBreakevenClose" style="font-size:18px">—</div><div class="stat-label">Breakeven Close Rate</div></div>
+        </div>
+
+        <div class="mb-breakeven-banner" id="mbB2bBreakevenBanner" style="display:none"></div>
+      </div>
+
+      <!-- B2C Panel -->
+      <div id="mb-b2c-panel" style="display:none">
+        <div class="form-row">
+          <div class="form-group">
+            <label>AOV ($) <span style="color:var(--text-muted)">average order value</span></label>
+            <input type="number" id="mbAOV" placeholder="85" oninput="mbCalc()" min="0" step="any">
+          </div>
+          <div class="form-group">
+            <label>COGS per Unit ($) <span style="color:var(--text-muted)">cost of goods</span></label>
+            <input type="number" id="mbCOGS" placeholder="25" oninput="mbCalc()" min="0" step="any">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Profit Margin (%)</label>
+            <input type="number" id="mbMargin" placeholder="70.6" oninput="mbCalc()" min="0" max="100" step="any">
+          </div>
+          <div class="form-group">
+            <label>Monthly Churn Rate (%)</label>
+            <input type="number" id="mbChurn" placeholder="5" oninput="mbCalc()" min="0" max="100" step="any">
+          </div>
+        </div>
+
+        <!-- B2C Results -->
+        <div class="stats-grid" style="grid-template-columns:repeat(3,1fr)">
+          <div class="stat-card"><div class="stat-value" id="mbB2cRevenue" style="font-size:18px">—</div><div class="stat-label">Total Revenue</div></div>
+          <div class="stat-card"><div class="stat-value" id="mbB2cGrossProfit" style="font-size:18px">—</div><div class="stat-label">Gross Profit</div></div>
+          <div class="stat-card"><div class="stat-value" id="mbB2cROI" style="font-size:18px">—</div><div class="stat-label">ROI</div></div>
+        </div>
+        <div class="stats-grid" style="grid-template-columns:repeat(4,1fr)">
+          <div class="stat-card"><div class="stat-value" id="mbB2cLTV" style="font-size:16px">—</div><div class="stat-label">LTV</div></div>
+          <div class="stat-card"><div class="stat-value" id="mbB2cLTVCAC" style="font-size:16px">—</div><div class="stat-label">LTV:CAC</div></div>
+          <div class="stat-card"><div class="stat-value" id="mbB2cBreakevenCPA" style="font-size:16px">—</div><div class="stat-label">Breakeven CPA</div></div>
+          <div class="stat-card"><div class="stat-value" id="mbB2cBreakevenConv" style="font-size:16px">—</div><div class="stat-label">Breakeven Conv.</div></div>
+        </div>
+
+        <div class="mb-breakeven-banner" id="mbB2cBreakevenBanner" style="display:none"></div>
+      </div>
+
+      <!-- ─── Funnel Chart ─── -->
+      <div class="mb-section-title">Funnel Visualization</div>
+      <div style="background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:20px">
+        <canvas id="mbFunnelChart"></canvas>
+      </div>
+
+      <!-- ─── Scenarios ─── -->
+      <div class="mb-section-title">Scenario Comparison</div>
+
+      <div style="display:flex;gap:8px;align-items:end;margin-bottom:16px;flex-wrap:wrap">
+        <div class="form-group" style="flex:1;min-width:200px;margin-bottom:0">
+          <label>Scenario Label</label>
+          <input type="text" id="mbScenarioLabel" placeholder="e.g. Google Ads - Brand">
+        </div>
+        <button class="btn btn-primary" onclick="mbSaveScenario()" style="height:38px">Save Scenario</button>
+        <button class="btn btn-danger" onclick="mbClearScenarios()" style="height:38px">Clear All Scenarios</button>
+      </div>
+
+      <div id="mbScenarioTableWrap" style="display:none;margin-bottom:20px">
+        <div style="overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius)">
+          <table class="mb-scenario-table" id="mbScenarioTable">
+            <thead id="mbScenarioHead"></thead>
+            <tbody id="mbScenarioBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Scenario comparison chart -->
+      <div id="mbScenarioChartWrap" style="display:none;margin-bottom:20px">
+        <div style="background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px">
+          <canvas id="mbScenarioChart"></canvas>
+        </div>
+      </div>
+
+      <!-- ─── Action Buttons ─── -->
+      <div class="btn-group" style="margin-bottom:20px">
+        <button class="btn" onclick="mbLoadExample()">Load Example</button>
+        <button class="btn" onclick="mbExportCsv()">Export CSV</button>
+        <button class="btn btn-danger" onclick="mbClear()">Clear All</button>
+      </div>
+
+      <!-- ─── Glossary ─── -->
+      <div class="mb-section-title" style="cursor:pointer" onclick="mbToggleGlossary()">
+        Metric Glossary <span id="mbGlossaryToggle" style="font-size:12px;color:var(--text-muted)">&#9660; click to expand</span>
+      </div>
+      <div id="mbGlossary" style="display:none">
+        <div class="output-preview" style="margin-top:0">
+          <dl class="mb-glossary-grid">
+            <div>
+              <dt>Total Spend</dt>
+              <dd>Total ad budget spent on the campaign.</dd>
+              <dt>Impressions</dt>
+              <dd>Total number of times your ad was displayed.</dd>
+              <dt>Reach</dt>
+              <dd>Number of unique people who saw your ad.</dd>
+              <dt>Frequency</dt>
+              <dd>Average times each person saw your ad (Impressions &divide; Reach).</dd>
+              <dt>CPM</dt>
+              <dd>Cost per 1,000 impressions (Spend &divide; Impressions &times; 1,000).</dd>
+              <dt>Clicks</dt>
+              <dd>Total clicks on your ad.</dd>
+              <dt>CPC</dt>
+              <dd>Cost per click (Spend &divide; Clicks).</dd>
+              <dt>CTR</dt>
+              <dd>Click-through rate &mdash; percentage of impressions that became clicks.</dd>
+              <dt>Conversions</dt>
+              <dd>Desired actions taken (form fill, purchase, signup, etc.).</dd>
+              <dt>CVR</dt>
+              <dd>Conversion rate &mdash; percentage of clicks that converted on your landing page.</dd>
+              <dt>CPA</dt>
+              <dd>Cost per acquisition (Spend &divide; Conversions). How much each conversion costs you.</dd>
+            </div>
+            <div>
+              <dt>ACV</dt>
+              <dd>Annual Contract Value &mdash; average yearly revenue per B2B deal.</dd>
+              <dt>MQL</dt>
+              <dd>Marketing Qualified Lead &mdash; a lead that meets your marketing criteria.</dd>
+              <dt>SQL</dt>
+              <dd>Sales Qualified Lead &mdash; a lead vetted and accepted by the sales team.</dd>
+              <dt>Closed Won</dt>
+              <dd>Deals that converted to paying customers.</dd>
+              <dt>AOV</dt>
+              <dd>Average Order Value &mdash; revenue per transaction.</dd>
+              <dt>COGS</dt>
+              <dd>Cost of Goods Sold &mdash; direct cost to produce or deliver the product.</dd>
+              <dt>Profit Margin</dt>
+              <dd>Percentage of revenue retained after COGS.</dd>
+              <dt>LTV</dt>
+              <dd>Customer Lifetime Value &mdash; total revenue expected from one customer.</dd>
+              <dt>Churn Rate</dt>
+              <dd>Percentage of customers who stop buying each month.</dd>
+              <dt>LTV:CAC Ratio</dt>
+              <dd>Lifetime value vs. acquisition cost. Healthy is 3:1 or better.</dd>
+              <dt>ROI</dt>
+              <dd>Return on Investment: (Revenue &minus; Spend) &divide; Spend &times; 100.</dd>
+              <dt>Breakeven</dt>
+              <dd>The point where ad revenue equals ad spend (ROI = 0%).</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- Exit Intent Popup -->
+    <section class="tool-section" id="tool-exit-intent">
+      <div class="tool-header">
+        <h2>Exit Intent Popup</h2>
+        <p>A drop-in script that shows a popup when visitors are about to leave your page. No plugins, no frameworks — pure HTML/CSS/JS.</p>
+      </div>
+
+      <style>
+        .ei-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+        .ei-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
+        .ei-card h3 { font-size: 13px; color: var(--accent); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        .ei-card ul { list-style: none; padding: 0; margin: 0; }
+        .ei-card ul li { font-size: 13px; color: var(--text-muted); padding: 4px 0; display: flex; gap: 8px; }
+        .ei-card ul li::before { content: '→'; color: var(--accent); flex-shrink: 0; }
+        .ei-steps { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+        .ei-step { display: flex; gap: 14px; align-items: flex-start; }
+        .ei-step-num { width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+        .ei-step-body strong { display: block; font-size: 14px; color: var(--text); margin-bottom: 2px; }
+        .ei-step-body span { font-size: 13px; color: var(--text-muted); }
+        .ei-code-wrap { position: relative; margin-bottom: 20px; }
+        .ei-code-wrap textarea { width: 100%; font-family: 'Inter', sans-serif; font-size: 12px; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 8px; padding: 16px; resize: vertical; line-height: 1.6; }
+        .ei-code-label { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
+        .ei-tabs { display: flex; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 0; }
+        .ei-tab { font-size: 13px; font-weight: 600; color: var(--text-muted); background: none; border: none; border-bottom: 2px solid transparent; padding: 8px 14px 10px; cursor: pointer; font-family: inherit; transition: color 0.15s, border-color 0.15s; margin-bottom: -1px; }
+        .ei-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+        .ei-tab-panel { display: none; }
+        .ei-tab-panel.active { display: block; }
+        .ei-settings-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .ei-settings-table th { text-align: left; padding: 8px 12px; color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; border-bottom: 1px solid var(--border); }
+        .ei-settings-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+        .ei-settings-table td:first-child { font-family: 'Inter', sans-serif; font-size: 12px; color: var(--accent); white-space: nowrap; }
+        .ei-settings-table td:last-child { color: var(--text-muted); }
+        .ei-tip { background: var(--surface); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; padding: 12px 14px; font-size: 13px; color: var(--text-muted); margin-bottom: 10px; }
+        .ei-tip strong { color: var(--text); }
+        .ei-file-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .ei-file-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; display: flex; flex-direction: column; }
+        .ei-file-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+        .ei-filename { font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; color: var(--accent); }
+        .ei-role-badge { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; padding: 2px 8px; border-radius: 4px; }
+        .ei-role-engine  { background: #F3F0FF; color: #7C5CFC; }
+        .ei-role-landing { background: #E8F0FE; color: #2383E2; }
+        .ei-role-admin   { background: #E6F4EA; color: #34C759; }
+        .ei-role-readme  { background: #FDE8F5; color: #E040A0; }
+        .ei-file-desc { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; line-height: 1.5; }
+        .ei-file-card textarea { flex: 1; font-family: 'Inter', sans-serif; font-size: 11px; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 10px; resize: vertical; line-height: 1.5; }
+        @media (max-width: 700px) { .ei-grid { grid-template-columns: 1fr; } .ei-file-grid { grid-template-columns: 1fr; } }
+      </style>
+
+      <!-- Tabs -->
+      <div class="ei-tabs">
+        <button class="ei-tab active" onclick="eiTab(this,'ei-overview')">Overview</button>
+        <button class="ei-tab" onclick="eiTab(this,'ei-install')">How to Install</button>
+        <button class="ei-tab" onclick="eiTab(this,'ei-code')">Get the Code</button>
+        <button class="ei-tab" onclick="eiTab(this,'ei-settings')">Settings Reference</button>
+      </div>
+
+      <!-- Tab: Overview -->
+      <div class="ei-tab-panel active" id="ei-overview">
+        <div class="ei-grid">
+          <div class="ei-card">
+            <h3>What it does</h3>
+            <ul>
+              <li>Detects when a visitor moves their cursor toward the browser's address bar — the exit signal</li>
+              <li>Shows a customisable popup with a headline, message, and CTA button</li>
+              <li>Redirects visitors to any URL you choose</li>
+              <li>Built-in cooldown so the same visitor isn't shown it repeatedly</li>
+              <li>Silent on mobile — no hover intent on touchscreens</li>
+            </ul>
+          </div>
+          <div class="ei-card">
+            <h3>What you get</h3>
+            <ul>
+              <li><strong>popup.js</strong> — the engine, drop it on any page</li>
+              <li><strong>index.html</strong> — a full landing page mockup to demo it</li>
+              <li><strong>admin.html</strong> — settings editor with live preview</li>
+              <li><strong>readme.html</strong> — setup guide to share with your team</li>
+              <li>Zero dependencies, no npm, no build step</li>
+            </ul>
+          </div>
+        </div>
+        <div class="ei-card" style="margin-bottom:16px">
+          <h3>Growth tips</h3>
+          <ul>
+            <li>Offer something specific — a free guide or discount converts far better than a generic "subscribe"</li>
+            <li>Keep your headline under 8 words. Visitors are already leaving — you have 2 seconds</li>
+            <li>Match the popup offer to the page. A pricing page popup should address price objections</li>
+            <li>24-hour cooldown is a good default — lower for high-traffic campaigns, raise for brand-sensitive audiences</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Tab: How to Install -->
+      <div class="ei-tab-panel" id="ei-install">
+        <div class="ei-steps">
+          <div class="ei-step">
+            <div class="ei-step-num">1</div>
+            <div class="ei-step-body">
+              <strong>Download popup.js and upload it to your web server</strong>
+              <span>Place it in the same folder as your HTML files, or a <code>/js/</code> subfolder. Use the "Get the Code" tab to copy or download it.</span>
+            </div>
+          </div>
+          <div class="ei-step">
+            <div class="ei-step-num">2</div>
+            <div class="ei-step-body">
+              <strong>Paste 2 lines before &lt;/body&gt; on any page</strong>
+              <span>That's the entire integration. The popup reads its config from localStorage so you can control it from admin.html.</span>
+            </div>
+          </div>
+          <div class="ei-step">
+            <div class="ei-step-num">3</div>
+            <div class="ei-step-body">
+              <strong>Open admin.html to set your headline, message, and destination URL</strong>
+              <span>The live preview updates as you type. Hit Save, then reload your page — done.</span>
+            </div>
+          </div>
+          <div class="ei-step">
+            <div class="ei-step-num">4</div>
+            <div class="ei-step-body">
+              <strong>Test it — move your cursor slowly to the top of the browser window</strong>
+              <span>Use "Test mode" in admin.html to bypass the cooldown so it fires on every page load during QA.</span>
+            </div>
+          </div>
+        </div>
+        <div class="ei-code-label">Paste this before &lt;/body&gt; on your page</div>
+        <div class="ei-code-wrap">
+          <textarea rows="5" readonly id="ei-snippet">&lt;script src="popup.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  ExitPopup.attachExitIntent(ExitPopup.loadConfig());
+&lt;/script&gt;</textarea>
+        </div>
+        <button class="btn btn-primary" onclick="eiCopy('ei-snippet', this)">Copy snippet</button>
+      </div>
+
+      <!-- Tab: Get the Code -->
+      <div class="ei-tab-panel" id="ei-code">
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px">
+          All 4 files are in the <code>exit-intent/</code> folder. Open any file to view and copy the source, or download it directly.
+        </p>
+        <div class="ei-file-grid">
+
+          <div class="ei-file-card">
+            <div class="ei-file-card-header">
+              <span class="ei-filename">popup.js</span>
+              <span class="ei-role-badge ei-role-engine">Engine</span>
+            </div>
+            <p class="ei-file-desc">The core script. Drop this on any page to activate exit intent detection.</p>
+            <div class="btn-group">
+              <a class="btn" href="../exit-intent/popup.js" target="_blank">View source</a>
+              <a class="btn btn-primary" href="../exit-intent/popup.js" download>Download</a>
+            </div>
+          </div>
+
+          <div class="ei-file-card">
+            <div class="ei-file-card-header">
+              <span class="ei-filename">index.html</span>
+              <span class="ei-role-badge ei-role-landing">Landing page</span>
+            </div>
+            <p class="ei-file-desc">Full mockup landing page with the popup wired in. Use as a demo or starting point.</p>
+            <div class="btn-group">
+              <a class="btn" href="../exit-intent/index.html" target="_blank">View source</a>
+              <a class="btn btn-primary" href="../exit-intent/index.html" download>Download</a>
+            </div>
+          </div>
+
+          <div class="ei-file-card">
+            <div class="ei-file-card-header">
+              <span class="ei-filename">admin.html</span>
+              <span class="ei-role-badge ei-role-admin">Settings editor</span>
+            </div>
+            <p class="ei-file-desc">Control panel — edit popup content, set destination URL, adjust cooldown, and live-preview changes.</p>
+            <div class="btn-group">
+              <a class="btn" href="../exit-intent/admin.html" target="_blank">View source</a>
+              <a class="btn btn-primary" href="../exit-intent/admin.html" download>Download</a>
+            </div>
+          </div>
+
+          <div class="ei-file-card">
+            <div class="ei-file-card-header">
+              <span class="ei-filename">readme.html</span>
+              <span class="ei-role-badge ei-role-readme">Setup guide</span>
+            </div>
+            <p class="ei-file-desc">Shareable setup guide with installation steps, settings reference, and growth tips.</p>
+            <div class="btn-group">
+              <a class="btn" href="../exit-intent/readme.html" target="_blank">View source</a>
+              <a class="btn btn-primary" href="../exit-intent/readme.html" download>Download</a>
+            </div>
+          </div>
+
+        </div>
+        <div class="ei-tip" style="margin-top:16px">
+          <strong>Note:</strong> Download all 4 files and keep them in the same folder. Then open <code>index.html</code> to see the popup in action, and <code>admin.html</code> to configure it.
+        </div>
+      </div>
+
+      <!-- Tab: Settings Reference -->
+      <div class="ei-tab-panel" id="ei-settings">
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px">All settings are configured in <strong>admin.html</strong> and stored in the browser's localStorage under the key <code>exitPopupConfig</code>.</p>
+        <table class="ei-settings-table">
+          <thead>
+            <tr><th>Setting</th><th>What it controls</th><th>Default</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>headline</td><td>Bold title at the top of the popup</td><td>"Wait — before you go!"</td></tr>
+            <tr><td>body</td><td>Supporting message below the headline</td><td>"Join 10,000 marketers…"</td></tr>
+            <tr><td>ctaLabel</td><td>Text on the CTA button</td><td>"Get Free Access"</td></tr>
+            <tr><td>ctaUrl</td><td>Where the CTA button sends the visitor</td><td># (no redirect)</td></tr>
+            <tr><td>cooldownHrs</td><td>Hours before the popup can fire again for the same visitor</td><td>24</td></tr>
+            <tr><td>enabled</td><td>Master on/off switch</td><td>true</td></tr>
+            <tr><td>testMode</td><td>Bypasses cooldown entirely — popup fires every time. Turn off before going live.</td><td>false</td></tr>
+          </tbody>
+        </table>
+        <div class="ei-tip" style="margin-top:16px">
+          <strong>Sensitivity:</strong> The popup requires the cursor to linger in the top 80px of the page for 300ms before firing. This prevents accidental triggers when reaching for the nav bar. Edit <code>INTENT_DELAY_MS</code> and the <code>80</code> threshold in popup.js to tune this.
+        </div>
+      </div>
+
+    </section>
+
   </main>
 </div>
 
@@ -1469,1504 +1649,177 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 </footer>
 
 <script>
-// ============ NAVIGATION ============
-document.querySelectorAll('.nav-item').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tool-section').forEach(s => s.classList.remove('active'));
+  // ── Exit Intent section ───────────────────────────────────────────────────
+
+  var EI_SOURCE = `/**
+ * popup.js — Exit Intent Popup Engine
+ *
+ * Drop-in script. Exposes window.ExitPopup with:
+ *   loadConfig()            → reads localStorage, returns merged config object
+ *   saveConfig(cfg)         → writes config to localStorage
+ *   buildPopup(cfg, opts)   → returns a DOM node (overlay + card)
+ *   attachExitIntent(cfg)   → wires exit-intent detection on the current page
+ *
+ * localStorage keys:
+ *   "exitPopupConfig"      → JSON config object
+ *   "exitPopupLastShown"   → ISO timestamp of last popup display
+ *
+ * Note: mouseleave-based exit intent does NOT fire on touch/mobile devices.
+ * That is intentional — there is no hover intent concept on a touchscreen.
+ */
+(function () {
+  'use strict';
+
+  var CONFIG_KEY     = 'exitPopupConfig';
+  var LAST_SHOWN_KEY = 'exitPopupLastShown';
+
+  var DEFAULTS = {
+    headline:    'Wait — before you go!',
+    body:        'Join 10,000 marketers getting weekly growth tips. Free forever.',
+    ctaLabel:    'Get Free Access',
+    ctaUrl:      '#',
+    cooldownHrs: 24,
+    enabled:     true,
+    testMode:    false   // when true, bypasses cooldown so popup fires every time
+  };
+
+  function loadConfig() {
+    try {
+      var raw = localStorage.getItem(CONFIG_KEY);
+      return Object.assign({}, DEFAULTS, raw ? JSON.parse(raw) : {});
+    } catch (e) {
+      return Object.assign({}, DEFAULTS);
+    }
+  }
+
+  function saveConfig(cfg) {
+    try {
+      localStorage.setItem(CONFIG_KEY, JSON.stringify(cfg));
+    } catch (e) {}
+  }
+
+  function isCoolingDown(cooldownHrs) {
+    try {
+      var raw = localStorage.getItem(LAST_SHOWN_KEY);
+      if (!raw) return false;
+      var elapsedHrs = (Date.now() - new Date(raw).getTime()) / 3600000;
+      return elapsedHrs < cooldownHrs;
+    } catch (e) { return false; }
+  }
+
+  function markShown() {
+    try { localStorage.setItem(LAST_SHOWN_KEY, new Date().toISOString()); } catch (e) {}
+  }
+
+  var animationInjected = false;
+  function ensureAnimation() {
+    if (animationInjected) return;
+    var style = document.createElement('style');
+    style.textContent = '@keyframes ep-slide-in { from { transform: translateY(-24px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }';
+    document.head.appendChild(style);
+    animationInjected = true;
+  }
+
+  function buildPopup(cfg, opts) {
+    opts = opts || {};
+    ensureAnimation();
+    var overlay = document.createElement('div');
+    overlay.setAttribute('id', 'ep-overlay');
+    Object.assign(overlay.style, { position:'fixed', inset:'0', background:'rgba(0,0,0,0.55)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:'9999', fontFamily:"system-ui,-apple-system,'Segoe UI',sans-serif" });
+    var card = document.createElement('div');
+    Object.assign(card.style, { background:'#ffffff', borderRadius:'14px', boxShadow:'0 24px 64px rgba(0,0,0,0.28)', padding:'44px 52px 36px', maxWidth:'480px', width:'90%', textAlign:'center', position:'relative', animation:'ep-slide-in 0.25s ease', boxSizing:'border-box' });
+    var closeBtn = document.createElement('button');
+    closeBtn.textContent = '×';
+    Object.assign(closeBtn.style, { position:'absolute', top:'14px', right:'18px', fontSize:'26px', lineHeight:'1', background:'none', border:'none', cursor:'pointer', color:'#aaa', padding:'0' });
+    var h2 = document.createElement('h2');
+    h2.textContent = cfg.headline || DEFAULTS.headline;
+    Object.assign(h2.style, { margin:'0 0 12px', fontSize:'24px', fontWeight:'700', color:'#1a1a2e', lineHeight:'1.3' });
+    var p = document.createElement('p');
+    p.textContent = cfg.body || DEFAULTS.body;
+    Object.assign(p.style, { margin:'0 0 24px', fontSize:'15px', color:'#555', lineHeight:'1.6' });
+    var cta = document.createElement('a');
+    cta.textContent = cfg.ctaLabel || DEFAULTS.ctaLabel;
+    cta.href = opts.preview ? '#' : (cfg.ctaUrl || '#');
+    if (!opts.preview && cfg.ctaUrl && cfg.ctaUrl !== '#') { cta.target='_blank'; cta.rel='noopener noreferrer'; }
+    Object.assign(cta.style, { display:'block', background:'#5b4cf5', color:'#fff', padding:'14px 28px', borderRadius:'8px', fontSize:'16px', fontWeight:'600', textDecoration:'none', transition:'background 0.15s ease', cursor:'pointer' });
+    cta.addEventListener('mouseover', function(){ cta.style.background='#4a3de0'; });
+    cta.addEventListener('mouseout',  function(){ cta.style.background='#5b4cf5'; });
+    var dismiss = document.createElement('a');
+    dismiss.textContent = "No thanks, I'll pass";
+    dismiss.href = '#';
+    Object.assign(dismiss.style, { display:'block', marginTop:'16px', fontSize:'13px', color:'#aaa', textDecoration:'underline', cursor:'pointer' });
+    card.append(closeBtn, h2, p, cta, dismiss);
+    overlay.appendChild(card);
+    function close() { if (overlay.parentNode) overlay.parentNode.removeChild(overlay); if (opts.onDismiss) opts.onDismiss(); }
+    closeBtn.addEventListener('click', close);
+    dismiss.addEventListener('click', function(e){ e.preventDefault(); close(); });
+    overlay.addEventListener('click', function(e){ if (e.target === overlay) close(); });
+    if (!opts.preview) { cta.addEventListener('click', function(){ markShown(); }); }
+    return overlay;
+  }
+
+  var INTENT_DELAY_MS = 300;
+
+  function attachExitIntent(cfg) {
+    if (!cfg.enabled) return;
+    var fired = false, intentTimer = null;
+    function cancelIntent() { if (intentTimer) { clearTimeout(intentTimer); intentTimer = null; } }
+    function handleMouseMove(e) {
+      if (fired) return;
+      if (e.clientY <= 80) { if (!intentTimer) { intentTimer = setTimeout(function(){ intentTimer = null; }, INTENT_DELAY_MS); } }
+      else { cancelIntent(); }
+    }
+    function handleMouseLeave(e) {
+      if (fired) return;
+      if (e.clientY > 5) { cancelIntent(); return; }
+      if (!intentTimer) { cancelIntent(); return; }
+      cancelIntent();
+      if (!cfg.testMode && isCoolingDown(cfg.cooldownHrs)) return;
+      fired = true;
+      if (!cfg.testMode) markShown();
+      var popup = buildPopup(cfg, { preview:false, onDismiss:function(){ fired = false; } });
+      document.body.appendChild(popup);
+    }
+    document.addEventListener('mousemove',  handleMouseMove);
+    document.addEventListener('mouseleave', handleMouseLeave);
+  }
+
+  window.ExitPopup = { loadConfig:loadConfig, saveConfig:saveConfig, buildPopup:buildPopup, attachExitIntent:attachExitIntent };
+
+})();`;
+
+
+  function eiTab(btn, panelId) {
+    document.querySelectorAll('.ei-tab').forEach(function(t){ t.classList.remove('active'); });
+    document.querySelectorAll('.ei-tab-panel').forEach(function(p){ p.classList.remove('active'); });
     btn.classList.add('active');
-    document.getElementById('tool-' + btn.dataset.tool).classList.add('active');
-  });
-});
+    document.getElementById(panelId).classList.add('active');
+    // Populate source textarea when Get the Code tab is opened
+    if (panelId === 'ei-code') {
+      document.getElementById('ei-full-source').value = EI_SOURCE;
+    }
+  }
 
-// Radio pill groups
-document.querySelectorAll('.radio-group').forEach(group => {
-  group.querySelectorAll('.radio-pill').forEach(pill => {
-    pill.addEventListener('click', () => {
-      group.querySelectorAll('.radio-pill').forEach(p => p.classList.remove('active'));
-      pill.classList.add('active');
-      pill.querySelector('input').checked = true;
+  function eiCopy(textareaId, btn) {
+    var ta = document.getElementById(textareaId);
+    navigator.clipboard.writeText(ta.value).then(function() {
+      var orig = btn.textContent;
+      btn.textContent = 'Copied!';
+      setTimeout(function(){ btn.textContent = orig; }, 2000);
     });
-  });
-});
-
-// ============ THEME ============
-function toggleTheme() {
-  const html = document.documentElement;
-  const isDark = html.getAttribute('data-theme') === 'dark';
-  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
-  document.getElementById('themeBtn').textContent = isDark ? 'Dark' : 'Light';
-}
-
-// ============ TOAST ============
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2000);
-}
-
-// ============ UTILITIES ============
-function copyText(id) {
-  const el = document.getElementById(id);
-  navigator.clipboard.writeText(el.value || el.textContent);
-  showToast('Copied!');
-}
-
-function clearFields(...ids) {
-  ids.forEach(id => document.getElementById(id).value = '');
-}
-
-function downloadFile(content, filename, mime) {
-  const blob = new Blob([content], { type: mime });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(a.href);
-}
-
-// ============ 1. JSON TO CSV ============
-function loadJsonSample() {
-  document.getElementById('jsonInput').value = JSON.stringify([
-    { name: "Alice Johnson", email: "alice@startup.io", plan: "pro", mrr: 99 },
-    { name: "Bob Smith", email: "bob@agency.co", plan: "enterprise", mrr: 299 },
-    { name: "Carol White", email: "carol@brand.com", plan: "starter", mrr: 29 }
-  ], null, 2);
-}
-
-function flattenObject(obj, prefix = '') {
-  const result = {};
-  for (const [key, val] of Object.entries(obj)) {
-    const newKey = prefix ? prefix + '.' + key : key;
-    if (val && typeof val === 'object' && !Array.isArray(val)) {
-      Object.assign(result, flattenObject(val, newKey));
-    } else if (Array.isArray(val)) {
-      // Check if array of primitives vs objects
-      const hasPrimitives = val.every(v => typeof v !== 'object' || v === null);
-      if (hasPrimitives) {
-        result[newKey] = val.join('; ');
-      } else {
-        // Array of objects: flatten each and create numbered keys
-        val.forEach((item, i) => {
-          if (item && typeof item === 'object') {
-            Object.assign(result, flattenObject(item, newKey + '[' + i + ']'));
-          } else {
-            result[newKey + '[' + i + ']'] = item ?? '';
-          }
-        });
-      }
-    } else {
-      result[newKey] = val ?? '';
-    }
-  }
-  return result;
-}
-
-function convertJsonToCsv() {
-  const input = document.getElementById('jsonInput').value.trim();
-  if (!input) return showToast('Paste JSON data first');
-  try {
-    let data = JSON.parse(input);
-
-    // Handle single object wrapping an array (e.g. { messages: [...] })
-    if (!Array.isArray(data) && typeof data === 'object') {
-      // Check if there's a single key whose value is an array of objects
-      const keys = Object.keys(data);
-      const arrayKey = keys.find(k => Array.isArray(data[k]) && data[k].length > 0 && typeof data[k][0] === 'object');
-      if (arrayKey) {
-        // Spread parent-level non-array fields into each child row
-        const parentFields = {};
-        keys.forEach(k => { if (k !== arrayKey) parentFields[k] = data[k]; });
-        data = data[arrayKey].map(item => ({ ...parentFields, ...item }));
-      } else {
-        data = [data];
-      }
-    }
-
-    if (!Array.isArray(data)) data = [data];
-    if (data.length === 0) return showToast('Empty array');
-
-    // Flatten all rows
-    const flatData = data.map(obj => flattenObject(obj));
-    const headers = [...new Set(flatData.flatMap(obj => Object.keys(obj)))];
-
-    const escapeCsvVal = (val) => {
-      let s = String(val ?? '');
-      if (s.includes(',') || s.includes('"') || s.includes('\n')) {
-        s = '"' + s.replace(/"/g, '""') + '"';
-      }
-      return s;
-    };
-
-    const csvRows = [headers.map(escapeCsvVal).join(',')];
-    flatData.forEach(obj => {
-      csvRows.push(headers.map(h => escapeCsvVal(obj[h])).join(','));
-    });
-    document.getElementById('csvOutput').value = csvRows.join('\n');
-    showToast('Converted!');
-  } catch (e) {
-    showToast('Invalid JSON: ' + e.message);
-  }
-}
-
-function exportCsv() {
-  const csv = document.getElementById('csvOutput').value;
-  if (!csv) return showToast('Nothing to export');
-  downloadFile(csv, 'export.csv', 'text/csv');
-  showToast('CSV downloaded!');
-}
-
-// ============ 2. DELIMITER TOOL ============
-function loadDelimSample() {
-  document.getElementById('delimInput').value = 'apple\nbanana\ncherry\napple\ndate\nbanana\nelderberry';
-}
-
-function getRadioValue(name) {
-  const checked = document.querySelector(`input[name="${name}"]:checked`);
-  return checked ? checked.value : '';
-}
-
-function convertDelim() {
-  const raw = document.getElementById('delimInput').value;
-  if (!raw.trim()) return showToast('Enter data first');
-
-  const splitBy = getRadioValue('explode');
-  const joinWith = getRadioValue('delim');
-  const quoteStyle = getRadioValue('quotes');
-  const tidy = getRadioValue('tidy') === 'yes';
-  const dedupe = getRadioValue('dedupe') === 'yes';
-  const interval = parseInt(document.getElementById('delimInterval').value) || 0;
-  const tagOpen = document.getElementById('tagOpen').value;
-  const tagClose = document.getElementById('tagClose').value;
-  const iTagOpen = document.getElementById('intervalTagOpen').value;
-  const iTagClose = document.getElementById('intervalTagClose').value;
-
-  const splitter = splitBy === '\\n' ? /\n/ : new RegExp(splitBy.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
-  let items = raw.split(splitter);
-
-  if (tidy) items = items.map(s => s.trim()).filter(s => s.length > 0);
-  if (dedupe) items = [...new Set(items)];
-
-  // Apply quotes
-  items = items.map(item => {
-    if (quoteStyle === 'double') return '"' + item + '"';
-    if (quoteStyle === 'single') return "'" + item + "'";
-    return item;
-  });
-
-  // Apply tags
-  if (tagOpen || tagClose) {
-    items = items.map(item => (tagOpen || '') + item + (tagClose || ''));
   }
 
-  const delim = joinWith === '\\n' ? '\n' : joinWith;
-
-  // Apply interval
-  if (interval > 0) {
-    const chunks = [];
-    for (let i = 0; i < items.length; i += interval) {
-      let chunk = items.slice(i, i + interval).join(delim);
-      if (iTagOpen || iTagClose) {
-        chunk = (iTagOpen || '') + chunk + (iTagClose || '');
-      }
-      chunks.push(chunk);
-    }
-    document.getElementById('delimOutput').value = chunks.join('\n');
-  } else {
-    document.getElementById('delimOutput').value = items.join(delim);
-  }
-
-  showToast('Converted!');
-}
-
-// ============ 3. WORD COUNT & READABILITY ============
-function analyzeText() {
-  const text = document.getElementById('wcInput').value;
-
-  // Counts
-  const chars = text.length;
-  const charsNoSpace = text.replace(/\s/g, '').length;
-  const words = text.trim() ? text.trim().split(/\s+/).length : 0;
-  const sentences = text.trim() ? (text.match(/[.!?]+(\s|$)/g) || []).length || (text.trim().length > 0 ? 1 : 0) : 0;
-  const paragraphs = text.trim() ? text.split(/\n\s*\n/).filter(p => p.trim()).length : 0;
-  const lines = text ? text.split('\n').length : 0;
-
-  document.getElementById('wcWords').textContent = words;
-  document.getElementById('wcChars').textContent = chars;
-  document.getElementById('wcCharsNoSpace').textContent = charsNoSpace;
-  document.getElementById('wcSentences').textContent = sentences;
-  document.getElementById('wcParagraphs').textContent = paragraphs;
-  document.getElementById('wcLines').textContent = lines;
-
-  // Automated Readability Index
-  if (words >= 10 && sentences >= 1) {
-    const ari = 4.71 * (chars / words) + 0.5 * (words / sentences) - 21.43;
-    const grade = Math.max(1, Math.round(ari));
-    const gradeLabels = {
-      1:'Kindergarten',2:'1st Grade',3:'2nd Grade',4:'3rd Grade',5:'4th Grade',
-      6:'5th Grade',7:'6th Grade',8:'7th Grade',9:'8th Grade',10:'10th Grade',
-      11:'11th Grade',12:'12th Grade',13:'College',14:'College+'
-    };
-
-    let cssClass, label;
-    if (grade <= 6) { cssClass = 'grade-good'; label = 'Easy'; }
-    else if (grade <= 10) { cssClass = 'grade-ok'; label = 'Moderate'; }
-    else { cssClass = 'grade-hard'; label = 'Difficult'; }
-
-    const gradeName = gradeLabels[Math.min(grade, 14)] || 'College+';
-    document.getElementById('readabilityResult').innerHTML =
-      `<div class="reading-badge ${cssClass}">Grade ${grade} &mdash; ${gradeName} &mdash; ${label}</div>` +
-      `<div style="margin-top:8px;font-size:12px;color:var(--text-muted)">` +
-      `ARI Score: ${ari.toFixed(2)} | Avg chars/word: ${(chars/words).toFixed(1)} | Avg words/sentence: ${(words/sentences).toFixed(1)}</div>`;
-  } else if (words > 0) {
-    document.getElementById('readabilityResult').innerHTML =
-      `<div class="reading-badge grade-ok">Need at least 10 words and 1 sentence for grading</div>`;
-  } else {
-    document.getElementById('readabilityResult').innerHTML =
-      `<div class="reading-badge grade-good">Type or paste text above to analyze</div>`;
-  }
-}
-
-// ============ 4. URL ENCODE/DECODE ============
-let encMode = 'component';
-
-function setEncMode(mode) {
-  encMode = mode;
-  document.getElementById('encModeComponent').classList.toggle('active', mode === 'component');
-  document.getElementById('encModeFull').classList.toggle('active', mode === 'full');
-  urlEncode();
-}
-
-function urlEncode() {
-  const val = document.getElementById('urlDecoded').value;
-  try {
-    document.getElementById('urlEncoded').value = encMode === 'component'
-      ? encodeURIComponent(val) : encodeURI(val);
-  } catch(e) { /* ignore */ }
-}
-
-function urlDecode() {
-  const val = document.getElementById('urlEncoded').value;
-  try {
-    document.getElementById('urlDecoded').value = encMode === 'component'
-      ? decodeURIComponent(val) : decodeURI(val);
-  } catch(e) { /* ignore */ }
-}
-
-// ============ 5. MAILTO GENERATOR ============
-let currentMailto = '';
-
-function generateMailto() {
-  const to = document.getElementById('mailTo').value.trim();
-  const subject = document.getElementById('mailSubject').value;
-  const cc = document.getElementById('mailCc').value.trim();
-  const bcc = document.getElementById('mailBcc').value.trim();
-  const body = document.getElementById('mailBody').value;
-
-  if (!to) {
-    document.getElementById('mailtoOutput').innerHTML = '<span style="color:var(--text-muted)">Enter a recipient email address...</span>';
-    currentMailto = '';
-    return;
-  }
-
-  const params = [];
-  if (subject) params.push('subject=' + encodeURIComponent(subject));
-  if (cc) params.push('cc=' + encodeURIComponent(cc));
-  if (bcc) params.push('bcc=' + encodeURIComponent(bcc));
-  if (body) params.push('body=' + encodeURIComponent(body));
-
-  currentMailto = 'mailto:' + encodeURIComponent(to) + (params.length ? '?' + params.join('&') : '');
-
-  document.getElementById('mailtoOutput').innerHTML =
-    `<a href="${currentMailto}" style="color:var(--accent);word-break:break-all">${currentMailto}</a>`;
-}
-
-function copyMailto() {
-  if (!currentMailto) return showToast('Generate a link first');
-  navigator.clipboard.writeText(currentMailto);
-  showToast('Mailto link copied!');
-}
-
-function testMailto() {
-  if (!currentMailto) return showToast('Generate a link first');
-  window.location.href = currentMailto;
-}
-
-function copyMailtoHtml() {
-  if (!currentMailto) return showToast('Generate a link first');
-  const subject = document.getElementById('mailSubject').value || 'Email Us';
-  const html = `<a href="${currentMailto}">${subject}</a>`;
-  navigator.clipboard.writeText(html);
-  showToast('HTML copied!');
-}
-
-// ============ 6. QR CODE GENERATOR ============
-let qrItems = [];
-
-function generateSingleQr() {
-  const url = document.getElementById('qrSingleUrl').value.trim();
-  if (!url) return showToast('Enter a URL');
-  addQr(url);
-}
-
-function generateBulkQr() {
-  const urls = document.getElementById('qrBulkUrls').value.trim().split('\n').filter(u => u.trim());
-  if (!urls.length) return showToast('Enter URLs (one per line)');
-  urls.forEach(u => addQr(u.trim()));
-  showToast(`Generated ${urls.length} QR codes`);
-}
-
-function addQr(url) {
-  const grid = document.getElementById('qrGrid');
-  const item = document.createElement('div');
-  item.className = 'qr-item';
-
-  const qrDiv = document.createElement('div');
-  item.appendChild(qrDiv);
-
-  const label = document.createElement('p');
-  label.textContent = url;
-  item.appendChild(label);
-
-  const dlBtn = document.createElement('button');
-  dlBtn.className = 'btn';
-  dlBtn.textContent = 'Download';
-  dlBtn.style.marginTop = '8px';
-  dlBtn.style.fontSize = '11px';
-  item.appendChild(dlBtn);
-
-  grid.appendChild(item);
-
-  const qr = new QRCode(qrDiv, {
-    text: url,
-    width: 160,
-    height: 160,
-    colorDark: '#000000',
-    colorLight: '#ffffff',
-    correctLevel: QRCode.CorrectLevel.H
-  });
-
-  setTimeout(() => {
-    const canvas = qrDiv.querySelector('canvas');
-    if (canvas) {
-      dlBtn.onclick = () => {
-        const a = document.createElement('a');
-        a.download = 'qr-' + url.replace(/[^a-z0-9]/gi, '_').substring(0, 30) + '.png';
-        a.href = canvas.toDataURL('image/png');
-        a.click();
-      };
-      qrItems.push({ url, canvas });
-    }
-  }, 100);
-}
-
-function exportQrAll() {
-  if (!qrItems.length) return showToast('No QR codes to export');
-  // Export individually since zip requires a library
-  qrItems.forEach(({ url, canvas }) => {
-    const a = document.createElement('a');
-    a.download = 'qr-' + url.replace(/[^a-z0-9]/gi, '_').substring(0, 30) + '.png';
-    a.href = canvas.toDataURL('image/png');
+  function eiDownload() {
+    var blob = new Blob([EI_SOURCE], { type: 'text/javascript' });
+    var url  = URL.createObjectURL(blob);
+    var a    = document.createElement('a');
+    a.href     = url;
+    a.download = 'popup.js';
     a.click();
-  });
-  showToast(`Exported ${qrItems.length} QR codes`);
-}
-
-function clearQr() {
-  document.getElementById('qrGrid').innerHTML = '';
-  qrItems = [];
-  showToast('Cleared');
-}
-
-// ============ 7. META DATA EXTRACTOR ============
-let metaResults = [];
-const CORS_PROXIES = [
-  'https://api.allorigins.win/raw?url=',
-  'https://corsproxy.io/?'
-];
-
-async function fetchWithProxy(url) {
-  for (const proxy of CORS_PROXIES) {
-    try {
-      const resp = await fetch(proxy + encodeURIComponent(url), { signal: AbortSignal.timeout(10000) });
-      if (resp.ok) return await resp.text();
-    } catch(e) { continue; }
+    URL.revokeObjectURL(url);
   }
-  throw new Error('Could not fetch URL (CORS proxy failed)');
-}
-
-function parseMeta(html, url) {
-  const doc = new DOMParser().parseFromString(html, 'text/html');
-  const getMeta = (attr, val) => {
-    const el = doc.querySelector(`meta[${attr}="${val}"]`);
-    return el ? (el.getAttribute('content') || '') : '';
-  };
-
-  return {
-    url,
-    title: doc.querySelector('title')?.textContent || '',
-    description: getMeta('name', 'description') || getMeta('property', 'og:description'),
-    canonical: doc.querySelector('link[rel="canonical"]')?.href || '',
-    ogTitle: getMeta('property', 'og:title'),
-    ogDescription: getMeta('property', 'og:description'),
-    ogImage: getMeta('property', 'og:image'),
-    ogType: getMeta('property', 'og:type'),
-    ogUrl: getMeta('property', 'og:url'),
-    ogSiteName: getMeta('property', 'og:site_name'),
-    twitterCard: getMeta('name', 'twitter:card'),
-    twitterTitle: getMeta('name', 'twitter:title'),
-    twitterDescription: getMeta('name', 'twitter:description'),
-    twitterImage: getMeta('name', 'twitter:image'),
-    twitterSite: getMeta('name', 'twitter:site'),
-    robots: getMeta('name', 'robots'),
-    viewport: getMeta('name', 'viewport'),
-    charset: doc.querySelector('meta[charset]')?.getAttribute('charset') || '',
-    favicon: doc.querySelector('link[rel="icon"], link[rel="shortcut icon"]')?.href || ''
-  };
-}
-
-function renderMetaResult(data) {
-  const entries = Object.entries(data).filter(([k,v]) => v && k !== 'url');
-  return `
-    <div class="meta-result">
-      <h4>${data.url}</h4>
-      <table class="meta-table">
-        ${entries.map(([k,v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join('')}
-      </table>
-    </div>`;
-}
-
-async function extractMeta() {
-  const url = document.getElementById('metaSingleUrl').value.trim();
-  if (!url) return showToast('Enter a URL');
-
-  const container = document.getElementById('metaResults');
-  container.innerHTML = '<p style="color:var(--text-muted)">Fetching...</p>';
-
-  try {
-    const html = await fetchWithProxy(url);
-    const data = parseMeta(html, url);
-    metaResults.push(data);
-    container.innerHTML = renderMetaResult(data);
-    showToast('Extracted!');
-  } catch(e) {
-    container.innerHTML = `<p style="color:var(--danger)">Error: ${e.message}</p>`;
-  }
-}
-
-async function extractMetaBulk() {
-  const urls = document.getElementById('metaBulkUrls').value.trim().split('\n').filter(u => u.trim());
-  if (!urls.length) return showToast('Enter URLs');
-
-  const container = document.getElementById('metaResults');
-  container.innerHTML = '<p style="color:var(--text-muted)">Fetching ' + urls.length + ' URLs...</p>';
-
-  const results = [];
-  for (const url of urls) {
-    try {
-      const html = await fetchWithProxy(url.trim());
-      const data = parseMeta(html, url.trim());
-      results.push(data);
-      metaResults.push(data);
-    } catch(e) {
-      results.push({ url: url.trim(), error: e.message });
-    }
-  }
-
-  container.innerHTML = results.map(d => d.error
-    ? `<div class="meta-result"><h4>${d.url}</h4><p style="color:var(--danger)">Error: ${d.error}</p></div>`
-    : renderMetaResult(d)
-  ).join('');
-  showToast(`Extracted ${results.length} results`);
-}
-
-function exportMetaCsv() {
-  if (!metaResults.length) return showToast('No results to export');
-  const headers = Object.keys(metaResults[0]);
-  const csv = [headers.join(','), ...metaResults.map(r =>
-    headers.map(h => {
-      let v = String(r[h] || '');
-      if (v.includes(',') || v.includes('"')) v = '"' + v.replace(/"/g, '""') + '"';
-      return v;
-    }).join(',')
-  )].join('\n');
-  downloadFile(csv, 'metadata-export.csv', 'text/csv');
-  showToast('CSV exported!');
-}
-
-function clearMeta() {
-  document.getElementById('metaResults').innerHTML = '';
-  metaResults = [];
-  showToast('Cleared');
-}
-
-// ============ 8. UTM BUILDER & PARSER ============
-let currentUtmUrl = '';
-
-function setUtmMode(mode) {
-  document.getElementById('utmModeCreate').classList.toggle('active', mode === 'create');
-  document.getElementById('utmModeParse').classList.toggle('active', mode === 'parse');
-  document.getElementById('utmCreatePanel').style.display = mode === 'create' ? 'block' : 'none';
-  document.getElementById('utmParsePanel').style.display = mode === 'parse' ? 'block' : 'none';
-}
-
-function buildUtmUrl() {
-  const base = document.getElementById('utmBaseUrl').value.trim();
-  const source = document.getElementById('utmSource').value.trim();
-  const medium = document.getElementById('utmMedium').value.trim();
-  const campaign = document.getElementById('utmCampaign').value.trim();
-  const term = document.getElementById('utmTerm').value.trim();
-  const content = document.getElementById('utmContent').value.trim();
-  const id = document.getElementById('utmId').value.trim();
-
-  if (!base || !source || !medium || !campaign) {
-    document.getElementById('utmOutputUrl').innerHTML =
-      '<span style="color:var(--text-muted)">Fill in all required fields (URL, source, medium, campaign)...</span>';
-    currentUtmUrl = '';
-    return;
-  }
-
-  const params = [];
-  params.push('utm_source=' + encodeURIComponent(source));
-  params.push('utm_medium=' + encodeURIComponent(medium));
-  params.push('utm_campaign=' + encodeURIComponent(campaign));
-  if (term) params.push('utm_term=' + encodeURIComponent(term));
-  if (content) params.push('utm_content=' + encodeURIComponent(content));
-  if (id) params.push('utm_id=' + encodeURIComponent(id));
-
-  const separator = base.includes('?') ? '&' : '?';
-  currentUtmUrl = base + separator + params.join('&');
-
-  document.getElementById('utmOutputUrl').innerHTML =
-    '<span style="word-break:break-all">' + highlightUtmParams(currentUtmUrl) + '</span>';
-}
-
-function highlightUtmParams(url) {
-  return url.replace(/(utm_\w+)=/g, '<span style="color:var(--accent);font-weight:600">$1</span>=');
-}
-
-function copyUtmUrl() {
-  if (!currentUtmUrl) return showToast('Build a URL first');
-  navigator.clipboard.writeText(currentUtmUrl);
-  showToast('URL copied!');
-}
-
-function copyUtmShort() {
-  if (!currentUtmUrl) return showToast('Build a URL first');
-  navigator.clipboard.writeText(currentUtmUrl.replace(/^https?:\/\//, ''));
-  showToast('Copied without protocol!');
-}
-
-function clearUtmBuilder() {
-  ['utmBaseUrl','utmSource','utmMedium','utmCampaign','utmTerm','utmContent','utmId'].forEach(id => {
-    document.getElementById(id).value = '';
-  });
-  document.getElementById('utmOutputUrl').innerHTML =
-    '<span style="color:var(--text-muted)">Fill in the required fields above...</span>';
-  currentUtmUrl = '';
-}
-
-function parseUtmUrl() {
-  const raw = document.getElementById('utmParseInput').value.trim();
-  const container = document.getElementById('utmParseResults');
-
-  if (!raw) {
-    container.innerHTML = '';
-    return;
-  }
-
-  let url;
-  try {
-    url = new URL(raw.startsWith('http') ? raw : 'https://' + raw);
-  } catch(e) {
-    container.innerHTML = '<p style="color:var(--danger);margin-top:12px">Invalid URL format</p>';
-    return;
-  }
-
-  const params = url.searchParams;
-
-  // Standard UTM params with requirements
-  const utmFields = [
-    { key: 'utm_source', label: 'Source', required: true, desc: 'Referrer (e.g. google, newsletter)' },
-    { key: 'utm_medium', label: 'Medium', required: true, desc: 'Marketing medium (e.g. cpc, email, social)' },
-    { key: 'utm_campaign', label: 'Campaign', required: true, desc: 'Campaign name or promo code' },
-    { key: 'utm_term', label: 'Term', required: false, desc: 'Paid search keywords' },
-    { key: 'utm_content', label: 'Content', required: false, desc: 'Ad or link differentiator' },
-    { key: 'utm_id', label: 'Campaign ID', required: false, desc: 'GA4 campaign identifier' },
-  ];
-
-  // Best-practice checks
-  const warnings = [];
-  const utmCount = { found: 0, required: 0, requiredPresent: 0 };
-
-  let rows = '';
-  utmFields.forEach(f => {
-    const val = params.get(f.key);
-    const hasParam = params.has(f.key);
-    if (f.required) utmCount.required++;
-
-    let status, statusLabel, valDisplay;
-
-    if (hasParam && val) {
-      utmCount.found++;
-      if (f.required) utmCount.requiredPresent++;
-      valDisplay = decodeURIComponent(val);
-
-      // Validation checks
-      const issues = [];
-      if (val !== val.toLowerCase()) issues.push('contains uppercase (best practice: lowercase)');
-      if (val.includes(' ')) issues.push('contains spaces (use hyphens or underscores)');
-      if (/[^\w\-\.+%]/.test(val) && val === encodeURIComponent(decodeURIComponent(val))) {
-        // fine, it's properly encoded
-      } else if (/[^\w\-\.+]/.test(decodeURIComponent(val))) {
-        issues.push('contains special characters');
-      }
-
-      if (issues.length > 0) {
-        status = 'utm-status-warn';
-        statusLabel = 'Warning';
-        warnings.push(f.key + ': ' + issues.join(', '));
-        valDisplay += '<div style="font-size:11px;color:var(--warning);margin-top:4px">' + issues.join(', ') + '</div>';
-      } else {
-        status = 'utm-status-ok';
-        statusLabel = 'Valid';
-      }
-    } else if (hasParam && !val) {
-      utmCount.found++;
-      status = 'utm-status-warn';
-      statusLabel = 'Empty';
-      valDisplay = '<span style="color:var(--warning)">Parameter present but empty</span>';
-      warnings.push(f.key + ' is present but has no value');
-    } else if (f.required) {
-      status = 'utm-status-miss';
-      statusLabel = 'Missing';
-      valDisplay = '<span style="color:var(--danger)">Required parameter missing</span>';
-    } else {
-      status = 'utm-status-info';
-      statusLabel = 'Not set';
-      valDisplay = '<span style="color:var(--text-muted)">&mdash;</span>';
-    }
-
-    rows += '<tr>' +
-      '<td><strong>' + f.key + '</strong><div style="font-size:10px;color:var(--text-muted)">' + f.desc + '</div></td>' +
-      '<td>' + (valDisplay || '') + '</td>' +
-      '<td><span class="utm-status ' + status + '">' + statusLabel + '</span></td>' +
-      '</tr>';
-  });
-
-  // Check for extra non-UTM query params
-  const extraParams = [];
-  params.forEach((v, k) => {
-    if (!k.startsWith('utm_')) extraParams.push(k + '=' + v);
-  });
-
-  // Overall score
-  const allRequiredPresent = utmCount.requiredPresent === utmCount.required;
-  const hasWarnings = warnings.length > 0;
-
-  let overallClass, overallLabel;
-  if (allRequiredPresent && !hasWarnings) {
-    overallClass = 'grade-good';
-    overallLabel = 'All UTM parameters look good';
-  } else if (allRequiredPresent && hasWarnings) {
-    overallClass = 'grade-ok';
-    overallLabel = 'UTM params present but has warnings';
-  } else {
-    overallClass = 'grade-hard';
-    overallLabel = 'Missing required UTM parameters';
-  }
-
-  container.innerHTML =
-    '<div class="reading-badge ' + overallClass + '" style="margin-bottom:16px">' + overallLabel + '</div>' +
-    '<table class="utm-parsed-table">' +
-    '<tr><th>Parameter</th><th>Value</th><th>Status</th></tr>' +
-    rows +
-    '</table>' +
-    (extraParams.length > 0 ?
-      '<div style="margin-top:12px;font-size:12px;color:var(--text-muted)"><strong>Other query params:</strong> ' +
-      extraParams.map(p => '<code style="background:var(--bg-elevated);padding:2px 6px;border-radius:3px">' + p + '</code>').join(' ') +
-      '</div>' : '') +
-    '<div class="utm-summary">' +
-      '<div class="utm-summary-card"><div class="stat-value" style="color:var(--accent)">' + utmCount.found + '/' + utmFields.length + '</div><div class="stat-label">UTM Params Found</div></div>' +
-      '<div class="utm-summary-card"><div class="stat-value" style="color:' + (allRequiredPresent ? 'var(--accent)' : 'var(--danger)') + '">' + utmCount.requiredPresent + '/' + utmCount.required + '</div><div class="stat-label">Required Present</div></div>' +
-      '<div class="utm-summary-card"><div class="stat-value" style="color:' + (hasWarnings ? 'var(--warning)' : 'var(--accent)') + '">' + warnings.length + '</div><div class="stat-label">Warnings</div></div>' +
-    '</div>';
-}
-
-// ============ 9. WEBINAR RETENTION ANALYZER ============
-let retentionChartInstance = null;
-let retentionCsvData = '';
-
-function loadRetentionSample() {
-  // Generate realistic sample: 50 attendees, webinar ~60 min
-  // Some leave early, most drop off gradually, a few stay till end
-  const sample = [];
-  for (let i = 0; i < 50; i++) {
-    const r = Math.random();
-    let dur;
-    if (r < 0.08) dur = Math.floor(Math.random() * 5) + 1;       // 8% leave in first 5 min
-    else if (r < 0.20) dur = Math.floor(Math.random() * 10) + 5;  // 12% leave 5-15 min
-    else if (r < 0.40) dur = Math.floor(Math.random() * 15) + 15; // 20% leave 15-30 min
-    else if (r < 0.65) dur = Math.floor(Math.random() * 15) + 30; // 25% leave 30-45 min
-    else if (r < 0.85) dur = Math.floor(Math.random() * 15) + 45; // 20% leave 45-60 min
-    else dur = 60;                                                  // 15% stay full 60 min
-    sample.push(dur);
-  }
-  document.getElementById('retentionTextarea').value = sample.join('\n');
-  document.getElementById('retentionFileInput').value = '';
-  showToast('Sample data loaded (50 attendees, ~60 min webinar)');
-}
-
-function parseDurations(text) {
-  const lines = text.trim().split('\n');
-  const header = lines[0].split(',').map(h => h.trim().toLowerCase());
-  let durations = [];
-  if (header.includes('time duration')) {
-    const idx = header.indexOf('time duration');
-    lines.slice(1).forEach(line => {
-      const val = parseFloat(line.split(',')[idx]);
-      if (!isNaN(val)) durations.push(val);
-    });
-  } else if (lines.every(l => !isNaN(parseFloat(l.trim())) && l.trim() !== '')) {
-    durations = lines.filter(l => l.trim()).map(l => parseFloat(l.trim()));
-  } else {
-    return null;
-  }
-  return durations;
-}
-
-function processRetention() {
-  const fileInput = document.getElementById('retentionFileInput');
-  const textarea = document.getElementById('retentionTextarea');
-  const file = fileInput.files[0];
-
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = e => runRetention(parseDurations(e.target.result));
-    reader.onerror = () => showToast('Error reading file');
-    reader.readAsText(file);
-  } else {
-    const text = textarea.value.trim();
-    if (!text) return showToast('Upload a CSV or paste duration data first');
-    runRetention(parseDurations(text));
-  }
-}
-
-function runRetention(durations) {
-  if (!durations || !durations.length) {
-    return showToast('Invalid data. Ensure CSV has "Time Duration" header or paste numbers (one per line).');
-  }
-
-  const initial = durations.length;
-  const totalWatch = durations.reduce((sum, d) => sum + d, 0);
-  const maxTime = Math.floor(Math.max(...durations));
-
-  // Build minute-by-minute retention
-  const retention = [];
-  for (let t = 1; t <= maxTime; t++) {
-    const rem = durations.filter(d => d >= t).length;
-    retention.push({ minute: t, remaining: rem, pct: parseFloat((rem / initial * 100).toFixed(2)) });
-  }
-
-  // Summary stats
-  const avgRetention = (totalWatch / (initial * maxTime) * 100).toFixed(1) + '%';
-  const avgWatch = (totalWatch / initial).toFixed(1) + ' min';
-  const halfMinute = Math.floor(maxTime / 2);
-  const halfRec = retention.find(r => r.minute === halfMinute);
-  const halfPct = halfRec ? halfRec.pct.toFixed(1) + '%' : 'N/A';
-  const endPct = retention[retention.length - 1].pct.toFixed(1) + '%';
-
-  document.getElementById('retAvgRetention').textContent = avgRetention;
-  document.getElementById('retAvgWatch').textContent = avgWatch;
-  document.getElementById('retHalfRetention').textContent = halfPct;
-  document.getElementById('retEndRetention').textContent = endPct;
-
-  // Chart
-  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-  const ctx = document.getElementById('retentionChart').getContext('2d');
-  if (retentionChartInstance) retentionChartInstance.destroy();
-
-  retentionChartInstance = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: retention.map(r => r.minute),
-      datasets: [{
-        label: 'Retention (%)',
-        data: retention.map(r => r.pct),
-        fill: true,
-        borderColor: '#22c55e',
-        backgroundColor: 'rgba(34, 197, 94, 0.1)',
-        borderWidth: 2,
-        pointRadius: maxTime > 30 ? 0 : 3,
-        pointBackgroundColor: '#22c55e',
-        tension: 0.2
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { labels: { color: isDark ? '#fff' : '#000', font: { family: "'JetBrains Mono', monospace", size: 11 } } }
-      },
-      scales: {
-        x: {
-          title: { display: true, text: 'Time (min)', color: isDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)', font: { family: "'JetBrains Mono', monospace" } },
-          ticks: { color: isDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)', font: { family: "'JetBrains Mono', monospace", size: 10 } },
-          grid: { color: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)' }
-        },
-        y: {
-          beginAtZero: true, max: 100,
-          title: { display: true, text: 'Retention (%)', color: isDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)', font: { family: "'JetBrains Mono', monospace" } },
-          ticks: { color: isDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)', font: { family: "'JetBrains Mono', monospace", size: 10 } },
-          grid: { color: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)' }
-        }
-      }
-    }
-  });
-
-  // Summary table (key intervals)
-  const intervals = [15, 30, 45, 60].filter(i => i <= maxTime);
-  if (!intervals.includes(maxTime)) intervals.push(maxTime);
-  const summaryBody = document.getElementById('retentionSummaryBody');
-  summaryBody.innerHTML = intervals.map(i => {
-    const rec = retention.find(r => r.minute === i);
-    const pctVal = rec ? rec.pct.toFixed(1) + '%' : '0%';
-    const lbl = i === maxTime ? 'End (' + i + ' min)' : i + ' min';
-    return '<tr><td>' + lbl + '</td><td>' + pctVal + '</td></tr>';
-  }).join('');
-
-  // Full table
-  const fullBody = document.getElementById('retentionFullBody');
-  fullBody.innerHTML = retention.map(r =>
-    '<tr><td>' + r.minute + '</td><td>' + r.remaining + '</td><td>' + r.pct.toFixed(2) + '%</td></tr>'
-  ).join('');
-
-  // CSV data for export
-  retentionCsvData = 'Time Spent (Minutes),Number Remaining,Retention (%)\n' +
-    retention.map(r => r.minute + ',' + r.remaining + ',' + r.pct.toFixed(2) + '%').join('\n');
-
-  // Show results and export buttons
-  document.getElementById('retentionResults').style.display = 'block';
-  document.getElementById('retentionDlCsv').style.display = 'inline-flex';
-  document.getElementById('retentionDlChart').style.display = 'inline-flex';
-  showToast('Processed ' + initial + ' attendees over ' + maxTime + ' minutes');
-}
-
-function downloadRetentionCsv() {
-  if (!retentionCsvData) return showToast('Process data first');
-  downloadFile(retentionCsvData, 'retention_data.csv', 'text/csv');
-  showToast('CSV downloaded!');
-}
-
-function downloadRetentionChart() {
-  const canvas = document.getElementById('retentionChart');
-  if (!canvas) return showToast('No chart to export');
-  const temp = document.createElement('canvas');
-  temp.width = canvas.width;
-  temp.height = canvas.height;
-  const tx = temp.getContext('2d');
-  tx.fillStyle = '#fff';
-  tx.fillRect(0, 0, temp.width, temp.height);
-  tx.drawImage(canvas, 0, 0);
-  const a = document.createElement('a');
-  a.href = temp.toDataURL('image/png');
-  a.download = 'retention_chart.png';
-  a.click();
-  showToast('Chart PNG downloaded!');
-}
-
-function clearRetention() {
-  document.getElementById('retentionTextarea').value = '';
-  document.getElementById('retentionFileInput').value = '';
-  document.getElementById('retentionResults').style.display = 'none';
-  document.getElementById('retentionDlCsv').style.display = 'none';
-  document.getElementById('retentionDlChart').style.display = 'none';
-  if (retentionChartInstance) { retentionChartInstance.destroy(); retentionChartInstance = null; }
-  retentionCsvData = '';
-  showToast('Cleared');
-}
-
-// ============ 10. TEXT TO SPEECH ============
-let ttsVoices = [];
-let ttsUtterance = null;
-let ttsStoppedByUser = false;
-const TTS_WPM = 150;
-
-function ttsPopulateVoices() {
-  ttsVoices = window.speechSynthesis.getVoices();
-  const sel = document.getElementById('ttsVoiceSelect');
-  sel.innerHTML = '';
-  ttsVoices.forEach((voice, i) => {
-    const opt = document.createElement('option');
-    opt.value = i;
-    opt.textContent = voice.name + ' (' + voice.lang + ')' + (voice.default ? ' [default]' : '');
-    sel.appendChild(opt);
-  });
-  // Prefer Google US English > Aaron > first
-  let idx = 0;
-  for (let i = 0; i < ttsVoices.length; i++) {
-    if (ttsVoices[i].name === 'Google US English') { idx = i; break; }
-  }
-  if (!ttsVoices[idx] || ttsVoices[idx].name !== 'Google US English') {
-    for (let i = 0; i < ttsVoices.length; i++) {
-      if (ttsVoices[i].name.toLowerCase().includes('aaron') && ttsVoices[i].lang.toLowerCase() === 'en-us') { idx = i; break; }
-    }
-  }
-  sel.value = idx;
-}
-
-ttsPopulateVoices();
-if (speechSynthesis.onvoiceschanged !== undefined) {
-  speechSynthesis.onvoiceschanged = ttsPopulateVoices;
-}
-
-function updateTtsInfo() {
-  const text = document.getElementById('ttsText').value.trim();
-  const speed = parseFloat(document.getElementById('ttsSpeedSelect').value);
-  const chars = text.length;
-  const words = text ? text.split(/\s+/).filter(Boolean).length : 0;
-  let durMin = words > 0 ? words / (TTS_WPM * speed) : 0;
-  const m = Math.floor(durMin);
-  const s = Math.round((durMin - m) * 60);
-  const durStr = m > 0 ? m + 'm ' + (s < 10 ? '0' : '') + s + 's' : s + 's';
-
-  document.getElementById('ttsCharCount').textContent = chars;
-  document.getElementById('ttsWordCount').textContent = words;
-  document.getElementById('ttsDuration').textContent = words > 0 ? durStr + ' @ ' + speed + 'x' : '0s';
-}
-
-function ttsSpeak() {
-  const text = document.getElementById('ttsText').value.trim();
-  if (!text) return showToast('Paste some text first');
-  if (window.speechSynthesis.speaking || window.speechSynthesis.paused) {
-    window.speechSynthesis.cancel();
-  }
-  ttsStoppedByUser = false;
-  ttsUtterance = new SpeechSynthesisUtterance(text);
-  const voiceIdx = document.getElementById('ttsVoiceSelect').value;
-  ttsUtterance.voice = ttsVoices[voiceIdx];
-  ttsUtterance.rate = parseFloat(document.getElementById('ttsSpeedSelect').value);
-  ttsUtterance.onend = () => {
-    document.getElementById('ttsStatus').textContent = 'Done speaking.';
-  };
-  ttsUtterance.onerror = (e) => {
-    if (!ttsStoppedByUser && e.error !== 'interrupted') {
-      document.getElementById('ttsStatus').textContent = 'Error: ' + e.error;
-    }
-  };
-  const voiceName = ttsUtterance.voice ? ttsUtterance.voice.name : 'default';
-  document.getElementById('ttsStatus').textContent = 'Speaking (' + voiceName + ', ' + ttsUtterance.rate + 'x)...';
-  window.speechSynthesis.speak(ttsUtterance);
-}
-
-function ttsPause() {
-  window.speechSynthesis.pause();
-  document.getElementById('ttsStatus').textContent = 'Paused.';
-}
-
-function ttsResume() {
-  window.speechSynthesis.resume();
-  document.getElementById('ttsStatus').textContent = 'Resumed.';
-}
-
-function ttsStop() {
-  if (window.speechSynthesis.speaking || window.speechSynthesis.paused) {
-    ttsStoppedByUser = true;
-    window.speechSynthesis.cancel();
-    document.getElementById('ttsStatus').textContent = 'Stopped.';
-  }
-}
-
-function ttsLoadSample() {
-  document.getElementById('ttsText').value = "Mary had a little lamb,\nIts fleece was white as snow;\nAnd everywhere that Mary went,\nThe lamb was sure to go.\n\nIt followed her to school one day,\nWhich was against the rule;\nIt made the children laugh and play\nTo see a lamb at school.\n\nAnd so the teacher turned it out,\nBut still it lingered near,\nAnd patiently waited about\nTill Mary did appear.\n\n\"Why does the lamb love Mary so?\"\nThe eager children cry;\n\"Why, Mary loves the lamb, you know,\"\nThe teacher did reply.";
-  updateTtsInfo();
-  showToast('Sample text loaded');
-}
-
-function ttsCopy() {
-  const text = document.getElementById('ttsText').value;
-  if (!text) return showToast('Nothing to copy');
-  navigator.clipboard.writeText(text);
-  showToast('Copied!');
-}
-
-function ttsSendSms() {
-  const text = document.getElementById('ttsText').value;
-  if (!text) return showToast('Nothing to send');
-  window.location.href = 'sms:?body=' + encodeURIComponent(text);
-}
-
-function ttsSendEmail() {
-  const text = document.getElementById('ttsText').value;
-  if (!text) return showToast('Nothing to send');
-  window.location.href = 'mailto:?subject=' + encodeURIComponent('Text from GM Toolkit') + '&body=' + encodeURIComponent(text);
-}
-
-// ============ 11. SPIN THE WHEEL ============
-let spinnerSegments = [];
-let spinnerRawNames = [];
-let spinnerPrivacy = false;
-const spinnerCtx = document.getElementById('spinnerCanvas').getContext('2d');
-const spinnerWrapper = document.getElementById('spinnerWrapper');
-
-function spinnerAbbreviate(name) {
-  const parts = name.trim().split(/\s+/);
-  return parts.length > 1 ? parts[0] + ' ' + parts[parts.length - 1][0] + '.' : parts[0];
-}
-
-function spinnerDrawWheel() {
-  const canvas = spinnerCtx.canvas;
-  spinnerCtx.clearRect(0, 0, canvas.width, canvas.height);
-  const n = spinnerSegments.length;
-  if (!n) return;
-  const radius = canvas.width / 2;
-  const angle = 2 * Math.PI / n;
-  const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#000';
-
-  // Dynamic font sizing
-  let fontSize = 14;
-  if (n > 30) fontSize = 11;
-  if (n > 50) fontSize = 9;
-  if (n > 70) fontSize = 7;
-
-  spinnerSegments.forEach((seg, i) => {
-    const start = i * angle;
-    const end = start + angle;
-
-    // Draw segment
-    spinnerCtx.beginPath();
-    spinnerCtx.moveTo(radius, radius);
-    spinnerCtx.arc(radius, radius, radius, start, end);
-    spinnerCtx.closePath();
-    spinnerCtx.fillStyle = 'hsl(' + (i * 360 / n) + ', 60%, 55%)';
-    spinnerCtx.fill();
-    spinnerCtx.strokeStyle = 'rgba(0,0,0,0.15)';
-    spinnerCtx.lineWidth = 1;
-    spinnerCtx.stroke();
-
-    // Draw text
-    spinnerCtx.save();
-    spinnerCtx.translate(radius, radius);
-    spinnerCtx.rotate(start + angle / 2);
-    spinnerCtx.fillStyle = '#000';
-    spinnerCtx.font = 'bold ' + fontSize + 'px "JetBrains Mono", monospace';
-    spinnerCtx.textAlign = 'right';
-    spinnerCtx.textBaseline = 'middle';
-    spinnerCtx.fillText(seg, radius - 12, 0);
-    spinnerCtx.restore();
-  });
-
-  // Center circle
-  spinnerCtx.beginPath();
-  spinnerCtx.arc(radius, radius, 18, 0, 2 * Math.PI);
-  spinnerCtx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#000';
-  spinnerCtx.fill();
-  spinnerCtx.strokeStyle = 'rgba(255,255,255,0.3)';
-  spinnerCtx.lineWidth = 2;
-  spinnerCtx.stroke();
-}
-
-function spinnerLoad() {
-  const raw = document.getElementById('spinnerNames').value.trim().split('\n').filter(n => n.trim());
-  if (raw.length < 2) return showToast('Enter at least 2 names');
-  spinnerRawNames = raw.map(n => n.trim());
-  spinnerSegments = spinnerPrivacy ? spinnerRawNames.map(spinnerAbbreviate) : [...spinnerRawNames];
-  spinnerWrapper.style.transition = 'none';
-  spinnerWrapper.style.transform = 'rotate(0deg)';
-  // Force reflow so the reset takes effect before re-enabling transition
-  spinnerWrapper.offsetHeight;
-  spinnerWrapper.style.transition = 'transform 5s cubic-bezier(0.33, 1, 0.68, 1)';
-  spinnerDrawWheel();
-  document.getElementById('spinnerSpinBtn').disabled = false;
-  document.getElementById('spinnerResult').textContent = '';
-  showToast(spinnerSegments.length + ' names loaded');
-}
-
-function spinnerSpin() {
-  const btn = document.getElementById('spinnerSpinBtn');
-  if (!spinnerSegments.length) return showToast('Add names first');
-  btn.disabled = true;
-  document.getElementById('spinnerResult').textContent = '';
-
-  const n = spinnerSegments.length;
-  const target = Math.floor(Math.random() * n);
-  const spinsCount = 3 + Math.random() * 3;
-  const degPer = 360 / n;
-  const mid = target * degPer + degPer / 2;
-  const pointerAt = 270; // pointer is at top (12 o'clock = 270 deg in canvas coords)
-  const finalDeg = spinsCount * 360 + (pointerAt - mid);
-
-  spinnerWrapper.style.transform = 'rotate(' + finalDeg + 'deg)';
-
-  spinnerWrapper.addEventListener('transitionend', function handler() {
-    spinnerWrapper.removeEventListener('transitionend', handler);
-    btn.disabled = false;
-    // Show winner
-    const winner = spinnerRawNames[target];
-    const display = spinnerPrivacy ? spinnerAbbreviate(winner) : winner;
-    document.getElementById('spinnerResult').textContent = '🎉 ' + display;
-    showToast('Winner: ' + display);
-  });
-}
-
-function spinnerTogglePrivacy() {
-  spinnerPrivacy = !spinnerPrivacy;
-  if (spinnerRawNames.length) {
-    spinnerSegments = spinnerPrivacy ? spinnerRawNames.map(spinnerAbbreviate) : [...spinnerRawNames];
-    spinnerDrawWheel();
-  }
-  showToast('Privacy ' + (spinnerPrivacy ? 'on' : 'off'));
-}
-
-function spinnerLoadDemo() {
-  const names = ['Alice Johnson', 'Bob Smith', 'Carol White', 'Dave Lee', 'Eve Martinez', 'Frank Chen', 'Grace Kim', 'Henry Park', 'Isla Patel', 'Jack Thompson', 'Kelly Nguyen', 'Leo Garcia'];
-  document.getElementById('spinnerNames').value = names.join('\n');
-  spinnerLoad();
-}
-
-function spinnerClear() {
-  spinnerSegments = [];
-  spinnerRawNames = [];
-  spinnerPrivacy = false;
-  spinnerCtx.clearRect(0, 0, spinnerCtx.canvas.width, spinnerCtx.canvas.height);
-  spinnerWrapper.style.transition = 'none';
-  spinnerWrapper.style.transform = 'rotate(0deg)';
-  spinnerWrapper.offsetHeight;
-  spinnerWrapper.style.transition = 'transform 5s cubic-bezier(0.33, 1, 0.68, 1)';
-  document.getElementById('spinnerSpinBtn').disabled = true;
-  document.getElementById('spinnerResult').textContent = '';
-  document.getElementById('spinnerNames').value = '';
-  showToast('Cleared');
-}
-
-// ============ 12. NAME DRAW ============
-const drawDemoNames = 'Aarav Miller\nAiko Moore\nAkira Jones\nAlexander Williams\nAmelia Lopez\nAnjali Hernandez\nAnya Smith\nAva Jackson\nBao Martin\nBenjamin Johnson\nBianca Garcia\nBinh Garcia\nBo Thomas\nBoris Wilson\nCarlos Lopez\nCeleste Martin\nCharlotte Wilson\nChen Gonzalez\nChloe Hernandez\nChul Lopez\nDara Jackson\nDarius Hernandez\nDeepa Moore\nDmitri Anderson\nDuyen Hernandez\nEhsan Martinez\nEiko Lopez\nElena Martinez\nElijah Rodriguez\nEmma Martinez\nEmre Gonzalez\nEun Thomas\nEvelyn Hernandez\nFahim Martin\nFarah Wilson\nFarid Johnson\nFatima Hernandez\nFlorence Taylor\nGianni Anderson\nGita Wilson\nGregor Lopez\nGuan Hernandez\nGustav Jackson\nHana Smith\nHarper Smith\nHaruto Thomas\nHazel Martinez\nHelena Martin\nHenry Smith\nHiro Williams\nIbrahim Jackson\nIlana Smith\nIndira Gonzalez\nIsabella Garcia\nIsha Jones\nIvan Garcia\nJames Brown\nJasmine Thomas\nJin Jackson\nJiro Wilson\nJoon Brown\nJorge Johnson\nKaori Gonzalez\nKatia Martinez\nKeiko Brown\nKiran Rodriguez\nKota Smith\nLan Garcia\nLeila Davis\nLiam Wilson\nLing Brown\nLior Taylor\nLucas Taylor\nLuka Williams\nMarina Brown\nMateo Gonzalez\nMei Martinez\nMia Taylor\nMin Williams\nMina Anderson\nNaoki Brown\nNaomi Gonzalez\nNikhil Moore\nNiko Garcia\nNoah Rodriguez\nNora Jones\nOksana Hernandez\nOliver Rodriguez\nOlivia Rodriguez\nOmar Miller\nOri Smith\nOrion Wilson\nOsamu Martin\nPaulo Rodriguez\nPavel Williams\nPetra Williams\nPing Jackson\nPriya Davis\nQamar Smith\nQi Williams\nQiang Hernandez\nQiuyue Anderson\nQuyen Anderson\nRaj Lopez\nRavi Davis\nRaviya Moore\nReza Martin\nRosa Davis\nSakura Jackson\nSami Martinez\nSang Davis\nSergio Brown\nSofia Rodriguez\nSophia Jackson\nTakumi Martinez\nTala Jones\nTariq Anderson\nTenzin Anderson\nTing Martin\nUjin Gonzalez\nUlrik Thomas\nUma Brown';
-
-function drawRenderGrid() {
-  const raw = document.getElementById('drawNamesInput').value.trim().split('\n').filter(n => n.trim()).slice(0, 300);
-  const grid = document.getElementById('drawGrid');
-  const privacy = document.getElementById('drawPrivacyToggle').checked;
-  grid.innerHTML = '';
-
-  raw.forEach(fullName => {
-    const parts = fullName.trim().split(/\s+/);
-    let display;
-    if (privacy && parts.length > 1) {
-      display = parts[0] + ' ' + parts[parts.length - 1].charAt(0) + '.';
-    } else {
-      display = fullName.trim();
-    }
-    const item = document.createElement('div');
-    item.className = 'draw-grid-item';
-    item.textContent = display;
-    grid.appendChild(item);
-  });
-}
-
-// Auto-render grid when typing
-document.getElementById('drawNamesInput').addEventListener('input', drawRenderGrid);
-
-function drawPlayBeep() {
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc = ctx.createOscillator();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(600, ctx.currentTime);
-    osc.connect(ctx.destination);
-    osc.start();
-    osc.stop(ctx.currentTime + 0.05);
-  } catch(e) {}
-}
-
-function drawPlayHappy() {
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const notes = [523.25, 659.25, 783.99];
-    notes.forEach((freq, idx) => {
-      const osc = ctx.createOscillator();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.15);
-      osc.connect(ctx.destination);
-      osc.start(ctx.currentTime + idx * 0.15);
-      osc.stop(ctx.currentTime + idx * 0.15 + 0.1);
-    });
-  } catch(e) {}
-}
-
-function drawStart() {
-  const items = Array.from(document.querySelectorAll('#drawGrid .draw-grid-item'));
-  if (!items.length) {
-    // Auto-render from textarea first
-    drawRenderGrid();
-    const newItems = Array.from(document.querySelectorAll('#drawGrid .draw-grid-item'));
-    if (!newItems.length) return showToast('Enter names first');
-    drawAnimate(newItems);
-  } else {
-    drawAnimate(items);
-  }
-}
-
-function drawAnimate(items) {
-  const btn = document.getElementById('drawGoBtn');
-  btn.disabled = true;
-  document.getElementById('drawWinnerBanner').style.display = 'none';
-
-  let cycles = 0;
-  let interval = 100;
-  const maxCycles = 30;
-  const total = items.length;
-
-  function tick() {
-    const rnd = Math.floor(Math.random() * total);
-    // Clear previous
-    items.forEach(i => i.classList.remove('highlight'));
-    items[rnd].classList.add('highlight');
-    items[rnd].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-    cycles++;
-
-    if (cycles < maxCycles) {
-      drawPlayBeep();
-      interval += 15;
-      setTimeout(tick, interval);
-    } else {
-      drawPlayHappy();
-      btn.disabled = false;
-      // Show winner banner
-      const winner = items[rnd].textContent;
-      const banner = document.getElementById('drawWinnerBanner');
-      banner.textContent = '🎉 Winner: ' + winner;
-      banner.style.display = 'block';
-      showToast('Winner: ' + winner);
-    }
-  }
-  tick();
-}
-
-function drawLoadDemo() {
-  document.getElementById('drawNamesInput').value = drawDemoNames;
-  drawRenderGrid();
-  showToast('120 demo names loaded');
-}
-
-function drawClear() {
-  document.getElementById('drawNamesInput').value = '';
-  document.getElementById('drawGrid').innerHTML = '';
-  document.getElementById('drawWinnerBanner').style.display = 'none';
-  document.getElementById('drawPrivacyToggle').checked = false;
-  showToast('Cleared');
-}
-
-// ============ BUSINESS DAYS CALCULATOR ============
-
-function bizdaysNthWeekday(year, month, weekday, n) {
-  // Get nth occurrence of weekday (0=Sun..6=Sat) in given month
-  const first = new Date(year, month, 1);
-  let day = 1 + ((weekday - first.getDay() + 7) % 7);
-  day += (n - 1) * 7;
-  return new Date(year, month, day);
-}
-
-function bizdaysLastWeekday(year, month, weekday) {
-  // Get last occurrence of weekday in given month
-  const last = new Date(year, month + 1, 0); // last day of month
-  const diff = (last.getDay() - weekday + 7) % 7;
-  return new Date(year, month, last.getDate() - diff);
-}
-
-function bizdaysGetHolidays(year) {
-  const holidays = [
-    { name: "New Year's Day", date: new Date(year, 0, 1) },
-    { name: "MLK Day", date: bizdaysNthWeekday(year, 0, 1, 3) },
-    { name: "Presidents' Day", date: bizdaysNthWeekday(year, 1, 1, 3) },
-    { name: "Memorial Day", date: bizdaysLastWeekday(year, 4, 1) },
-    { name: "Juneteenth", date: new Date(year, 5, 19) },
-    { name: "Independence Day", date: new Date(year, 6, 4) },
-    { name: "Labor Day", date: bizdaysNthWeekday(year, 8, 1, 1) },
-    { name: "Columbus Day", date: bizdaysNthWeekday(year, 9, 1, 2) },
-    { name: "Veterans Day", date: new Date(year, 10, 11) },
-    { name: "Thanksgiving", date: bizdaysNthWeekday(year, 10, 4, 4) },
-    { name: "Christmas Day", date: new Date(year, 11, 25) }
-  ];
-
-  // Apply weekend observance: Sat → Fri, Sun → Mon
-  return holidays.map(h => {
-    const d = new Date(h.date);
-    const dow = d.getDay();
-    let observed = new Date(d);
-    if (dow === 6) observed.setDate(d.getDate() - 1); // Sat → Fri
-    if (dow === 0) observed.setDate(d.getDate() + 1); // Sun → Mon
-    return { name: h.name, actual: d, observed };
-  });
-}
-
-function bizdaysDateKey(d) {
-  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-}
-
-function bizdaysFormatDuration(totalDays) {
-  if (totalDays === 0) return '0 days';
-  const parts = [];
-  const years = Math.floor(totalDays / 365);
-  let rem = totalDays % 365;
-  const months = Math.floor(rem / 30);
-  rem = rem % 30;
-  const weeks = Math.floor(rem / 7);
-  const days = rem % 7;
-  if (years) parts.push(years + (years === 1 ? ' year' : ' years'));
-  if (months) parts.push(months + (months === 1 ? ' month' : ' months'));
-  if (weeks) parts.push(weeks + (weeks === 1 ? ' week' : ' weeks'));
-  if (days) parts.push(days + (days === 1 ? ' day' : ' days'));
-  return parts.join(', ');
-}
-
-function bizdaysSetMode(mode) {
-  const btns = document.querySelectorAll('#tool-bizdays .toggle-btn');
-  btns.forEach(b => b.classList.remove('active'));
-  if (mode === 'picker') {
-    btns[0].classList.add('active');
-    document.getElementById('bizdays-picker-panel').style.display = '';
-    document.getElementById('bizdays-manual-panel').style.display = 'none';
-  } else {
-    btns[1].classList.add('active');
-    document.getElementById('bizdays-picker-panel').style.display = 'none';
-    document.getElementById('bizdays-manual-panel').style.display = '';
-  }
-}
-
-function bizdaysSetToday() {
-  const today = new Date();
-  const iso = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
-  const us = String(today.getMonth() + 1).padStart(2, '0') + '/' + String(today.getDate()).padStart(2, '0') + '/' + today.getFullYear();
-  document.getElementById('bizdaysStartDate').value = iso;
-  document.getElementById('bizdaysStartManual').value = us;
-  showToast('Start date set to today');
-}
-
-function bizdaysClear() {
-  document.getElementById('bizdaysStartDate').value = '';
-  document.getElementById('bizdaysEndDate').value = '';
-  document.getElementById('bizdaysStartManual').value = '';
-  document.getElementById('bizdaysEndManual').value = '';
-  document.getElementById('bizdays-results').style.display = 'none';
-  showToast('Cleared');
-}
-
-function bizdaysParseManual(val) {
-  const m = val.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
-  if (!m) return null;
-  const d = new Date(parseInt(m[3]), parseInt(m[1]) - 1, parseInt(m[2]));
-  if (isNaN(d.getTime())) return null;
-  return d;
-}
-
-function bizdaysCalc() {
-  try {
-    const pickerPanel = document.getElementById('bizdays-picker-panel');
-    const pickerMode = pickerPanel.style.display !== 'none';
-    let start, end;
-
-    if (pickerMode) {
-      const sv = document.getElementById('bizdaysStartDate').value;
-      const ev = document.getElementById('bizdaysEndDate').value;
-      if (!sv || !ev) { showToast('Please select both start and end dates'); return; }
-      const sp = sv.split('-');
-      start = new Date(parseInt(sp[0]), parseInt(sp[1]) - 1, parseInt(sp[2]));
-      const ep = ev.split('-');
-      end = new Date(parseInt(ep[0]), parseInt(ep[1]) - 1, parseInt(ep[2]));
-    } else {
-      start = bizdaysParseManual(document.getElementById('bizdaysStartManual').value);
-      end = bizdaysParseManual(document.getElementById('bizdaysEndManual').value);
-      if (!start || !end) { showToast('Please enter valid dates (MM/DD/YYYY)'); return; }
-    }
-
-    if (isNaN(start.getTime()) || isNaN(end.getTime())) { showToast('Invalid date values'); return; }
-    if (start >= end) { showToast('End date must be after start date'); return; }
-
-    // Collect holidays for all relevant years
-    const startYear = start.getFullYear();
-    const endYear = end.getFullYear();
-    const allHolidays = [];
-    for (let y = startYear; y <= endYear; y++) {
-      allHolidays.push(...bizdaysGetHolidays(y));
-    }
-
-    // Build set of observed holiday date keys
-    const holidayMap = {};
-    allHolidays.forEach(h => { holidayMap[bizdaysDateKey(h.observed)] = h.name; });
-
-    let bizDays = 0, weekendDays = 0, holidayDays = 0;
-    const skippedHolidays = [];
-    const calendarDays = Math.round((end - start) / (1000 * 60 * 60 * 24));
-
-    const cur = new Date(start.getFullYear(), start.getMonth(), start.getDate());
-    while (cur < end) {
-      const dow = cur.getDay();
-      const key = bizdaysDateKey(cur);
-      if (dow === 0 || dow === 6) {
-        weekendDays++;
-      } else if (holidayMap[key]) {
-        holidayDays++;
-        skippedHolidays.push({ name: holidayMap[key], date: new Date(cur) });
-      } else {
-        bizDays++;
-      }
-      cur.setDate(cur.getDate() + 1);
-    }
-
-    // Update results
-    document.getElementById('bizdays-results').style.display = 'block';
-    document.getElementById('bizdays-duration-banner').textContent = bizdaysFormatDuration(bizDays);
-    document.getElementById('bizdays-biz-count').textContent = bizDays;
-    document.getElementById('bizdays-cal-count').textContent = calendarDays;
-    document.getElementById('bizdays-weekends').textContent = weekendDays;
-    document.getElementById('bizdays-holidays').textContent = holidayDays;
-
-    // Skipped holidays pills
-    const pillsEl = document.getElementById('bizdays-holiday-pills');
-    if (skippedHolidays.length === 0) {
-      pillsEl.innerHTML = '<span style="color:var(--text-muted);font-size:12px">No holidays in this range</span>';
-    } else {
-      pillsEl.innerHTML = skippedHolidays.map(h => {
-        const ds = String(h.date.getMonth() + 1) + '/' + String(h.date.getDate()) + '/' + h.date.getFullYear();
-        return '<span class="bizdays-holiday-pill">' + h.name + ' (' + ds + ')</span>';
-      }).join('');
-    }
-
-    // Reference table — show holidays for each year in range
-    const refBody = document.getElementById('bizdays-ref-body');
-    refBody.innerHTML = '';
-    for (let y = startYear; y <= endYear; y++) {
-      const yearHolidays = bizdaysGetHolidays(y);
-      yearHolidays.forEach(h => {
-        const tr = document.createElement('tr');
-        const fmt = d => String(d.getMonth() + 1) + '/' + String(d.getDate()) + '/' + d.getFullYear();
-        const actualStr = fmt(h.actual);
-        const observedStr = fmt(h.observed);
-        const obsLabel = actualStr === observedStr ? 'Same' : observedStr;
-        [h.name + (endYear > startYear ? ' (' + y + ')' : ''), actualStr, obsLabel].forEach(val => {
-          const td = document.createElement('td');
-          td.textContent = val;
-          tr.appendChild(td);
-        });
-        refBody.appendChild(tr);
-      });
-    }
-
-    showToast('Calculated: ' + bizDays + ' business days');
-  } catch(e) {
-    showToast('Error: ' + e.message);
-    console.error('bizdaysCalc error:', e);
-  }
-}
-
-// Initialize start date to today
-(function() {
-  const today = new Date();
-  const iso = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
-  const us = String(today.getMonth() + 1).padStart(2, '0') + '/' + String(today.getDate()).padStart(2, '0') + '/' + today.getFullYear();
-  document.getElementById('bizdaysStartDate').value = iso;
-  document.getElementById('bizdaysStartManual').value = us;
-})();
 </script>
+<script src="app.min.js?v=2"></script>
+<script>lucide.createIcons();</script>
 </body>
 </html>
